@@ -1,0 +1,18 @@
+{%extends "base.html" %}
+
+{% block title %}
+    TempTitle : DashBoard
+{% endblock %}
+
+{% block content %}
+
+    <h1>Hello {{currentUser}}</h1>
+
+    <h2>dashboard</h2>
+
+    <a href = auth/signout>Sign Out</a>
+
+    {% for message in messages %}
+        <p> {{ message }} </p>
+    {% endfor %}
+{% endblock %}

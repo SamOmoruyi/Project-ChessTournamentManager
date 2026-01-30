@@ -1,0 +1,47 @@
+{%extends "base.html" %}
+
+{% block title %}
+    TempTitle : Sign-Up
+{% endblock %}
+
+{% block content %}
+    <div>
+        <h1>TempTitle </h1>
+
+        <h2>Welcome please insert details </h2>
+
+        <form action = "/auth/createuser" method = "post">
+
+            <div>
+                <label for = "email">Email:</label>
+                <input name = "email" id = "email" type = "text" required /> 
+            </div>   
+
+            <div>
+                <label for = "username">Username:</label>
+                <input name = "username" id = "username" type = "text" required minlength = 4 /> 
+            </div>
+
+            <div>
+                <label for = "password">Password:</label>
+                <input name = "password" id = "password" type = "password" required minlength = "8" /> 
+            </div>
+
+            <div>
+                <label for = "repassword">Re-Enter password:</label>
+                <input name = "repassword" id = "repassword" type = "password" required minlength = "8" /> 
+            </div>
+
+            <div>
+                <input type = "submit" value = "Sign-Up!" />
+            </div>
+            
+        </form>
+
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+
+        <p> Already have an account? <a href = "/login">Click here to login!</a> </p>
+    </div>
+{% endblock %}

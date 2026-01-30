@@ -1,0 +1,32 @@
+{%extends "base.html"%}
+
+{% block title %}
+    TempTitle : Login
+{% endblock %}
+
+{% block content %}
+    <div>
+        <h1>TempTitle </h1>
+
+        <h2> Please input your details to login</h2>
+
+        <form action = "/auth/authoriseuser" method = "post">
+            
+            <div>
+                <label for = "username">Username:</label>
+                <input name = "username" id = "username" type = "text" required /> 
+            </div>
+
+            <div>
+                <label for = "password">Password:</label>
+                <input name = "password" id = "password" type = "password" required /> 
+            </div>
+
+            <div>
+                <input type = "submit" value = "Login" />
+            </div>
+
+        </form>
+        <p> No account? <a href = "/signup">Click here to sign up!</a> </p>
+    </div>
+{% endblock %}

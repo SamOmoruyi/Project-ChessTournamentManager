@@ -56,6 +56,20 @@ class DataBaseHandler:
         with self.connect() as conn:
             conn.execute("DELETE FROM users WHERE userID = 2")
             conn.commit()
+    #making function that authorises users 
+    def authoriseUser(self, username, email, password):
+        try:
+            with self.connect() as conn:
+                #
+                results = conn.execute("SELECT userID FROM users WHERE username = ? AND email = ? AND password = ?", (username, email, password))
+                #
+                userDetails, userID = results.fetchone()
+                
+                conn.commit()
+                return True, userID
+
+        except:
+            return False, None
         
 db = DataBaseHandler()
 db.createTable()
