@@ -29,4 +29,9 @@
         </form>
         <p> No account? <a href = "/signup">Click here to sign up!</a> </p>
     </div>
+
+    {% for message in messages %}
+        <p> {{ message }} </p>
+    {% endfor %}
+
 {% endblock %}

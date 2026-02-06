@@ -9,18 +9,18 @@
         <h1>TempTitle </h1>
 
         <h2>Welcome please insert details </h2>
-
+        
         <form action = "/auth/createuser" method = "post">
-
-            <div>
-                <label for = "email">Email:</label>
-                <input name = "email" id = "email" type = "text" required /> 
-            </div>   
 
             <div>
                 <label for = "username">Username:</label>
                 <input name = "username" id = "username" type = "text" required minlength = 4 /> 
             </div>
+
+            <div>
+                <label for = "email">Email:</label>
+                <input name = "email" id = "email" type = "text" required /> 
+            </div>   
 
             <div>
                 <label for = "password">Password:</label>
@@ -44,4 +44,9 @@
 
         <p> Already have an account? <a href = "/login">Click here to login!</a> </p>
     </div>
+
+    {% for message in messages %}
+        <p> {{ message }} </p>
+    {% endfor %}
+    
 {% endblock %}

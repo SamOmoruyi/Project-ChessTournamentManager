@@ -1,8 +1,8 @@
 from flask import Blueprint, flash, redirect, request, session, url_for
 from database import DataBaseHandler
-
+# setup of blueprint
 auth = Blueprint("auth",__name__,url_prefix="/auth")
-
+# authorise user function in order to validate user login details from the server-side
 @auth.route("/authoriseuser", methods = ["POST"])
 def authoriseUser():
     formDetails = request.form
@@ -17,7 +17,7 @@ def authoriseUser():
     return redirect(url_for("pages.login"))
  
 @auth.route("/createuser", methods = ["POST"])
-#function which creates a user properly through website details instead of hard-coding details manually
+# function which creates a user properly through website details instead of hard-coding details manually
 def createUser():
     formDetails = request.form
     username = formDetails.get("username")
@@ -25,7 +25,7 @@ def createUser():
     password = formDetails.get("password")
     repassword = formDetails.get("repassword")
     errors = False
-    #error checking and additional messages
+    #error checking and outputting suitable error messages
     if password != repassword:
         flash("Passwords do not match - Please try again.")
         errors = True
@@ -48,8 +48,8 @@ def createUser():
     else:
         flash("An error has occurred")
     return redirect(url_for("pages.signup"))
-#simple signout function
+# simple signout function
 @auth.route("/signout")
 def signOut():
     session.clear()
-    return redirect(url_for("guestdashboard"))
+    return redirect(url_for("pages.guestdashboard"))

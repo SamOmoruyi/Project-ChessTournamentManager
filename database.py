@@ -51,20 +51,20 @@ class DataBaseHandler:
             print(error)
             print("unkown-error")
             return False, "unknown-error"
-    #making function to delete users from the Users Table will be hard coded for now and improved at a later stage
+    #making procedure to delete users from the Users Table will be hard coded for now and improved at a later stage
     def deleteUser(self):
         with self.connect() as conn:
             conn.execute("DELETE FROM users WHERE userID = 2")
             conn.commit()
+            
     #making function that authorises users 
     def authoriseUser(self, username, email, password):
         try:
             with self.connect() as conn:
-                #
+                # collecting results from creating a user into one variable
                 results = conn.execute("SELECT userID FROM users WHERE username = ? AND email = ? AND password = ?", (username, email, password))
-                #
+                # fetching results so that other functions can make use of them
                 userDetails, userID = results.fetchone()
-                
                 conn.commit()
                 return True, userID
 
@@ -74,4 +74,3 @@ class DataBaseHandler:
 db = DataBaseHandler()
 db.createTable()
 #db.deleteUser()
-db.createUser("test1", "test@1", "12345678")
