@@ -5,15 +5,18 @@ auth = Blueprint("auth",__name__,url_prefix="/auth")
 # authorise user function in order to validate user login details from the server-side
 @auth.route("/authoriseuser", methods = ["POST"])
 def authoriseUser():
+    # collection of details
     formDetails = request.form
     username = formDetails.get("username")
-    email = formDetails.get("email")
     password = formDetails.get("password")
+    # opening database so stuff can be handled
     db = DataBaseHandler()
-    success = db.authoriseUser(username, email, password)
+    success, userID = db.authoriseUser(username, password)
+    # the authorisation proccess
     if success:
         session["currentUser"] = username
-        return redirect(url_for("pages.dashboard"))    
+        return redirect(url_for("pages.dashboard"))
+    flash("Login was unsuccessful!")    
     return redirect(url_for("pages.login"))
  
 @auth.route("/createuser", methods = ["POST"])

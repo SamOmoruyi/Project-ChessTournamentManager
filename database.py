@@ -58,15 +58,18 @@ class DataBaseHandler:
             conn.commit()
             
     #making function that authorises users 
-    def authoriseUser(self, username, email, password):
+    def authoriseUser(self, username, password):
         try:
             with self.connect() as conn:
                 # collecting results from creating a user into one variable
-                results = conn.execute("SELECT userID FROM users WHERE username = ? AND email = ? AND password = ?", (username, email, password))
+                results = conn.execute("SELECT userID FROM users WHERE username = ? AND password = ?", (username, password))
                 # fetching results so that other functions can make use of them
-                userDetails, userID = results.fetchone()
-                conn.commit()
-                return True, userID
+                userID = results.fetchone()
+                # conn.commit()
+                if userID != None:
+                    return True, userID[0]
+                else:
+                    return False, None
 
         except:
             return False, None
