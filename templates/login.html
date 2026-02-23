@@ -30,8 +30,14 @@
         <p> No account? <a href = "/signup">Click here to sign up!</a> </p>
     </div>
 
-    {% for message in messages %}
-        <p> {{ message }} </p>
-    {% endfor %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class=flashes>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
 
 {% endblock %}

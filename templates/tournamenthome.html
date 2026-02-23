@@ -1,0 +1,38 @@
+{%extends "base.html" %}
+
+{% block title %}
+    TempTitle : TournamentsHome
+{% endblock %}
+
+{% block content %}
+
+    {% if not tasks %}
+        <p>No tasks set at the moment</p>
+    {% else %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Tournament Name</th>
+                    <th>Description</th>
+                    <th>Size</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tournament in tournaments %}
+                    <tr>
+                        <td>{{tournament[2]}}</td>
+                        <td>{{tournament[3]}}</td>
+                        <td>{{tournament[4]}}</td>
+                        <td>{{tournament[5]}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    {% for message in messages %}
+        <p> {{ message }} </p>
+    {% endfor %}
+
+{% endblock %}

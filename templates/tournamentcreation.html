@@ -1,0 +1,64 @@
+{%extends "base.html" %}
+
+{% block title %}
+    TempTitle : Tournament Creation
+{% endblock %}
+
+{% block content %}
+
+    <datalist id = "possibleSizes"> 
+        <option value = "2">
+        <option value = "4">
+        <option value = "8">
+        <option value = "16">
+    </datalist>
+
+    <div>
+        <h1>TempTitle </h1>
+
+        <h2> Please input details for tournament you would like to make</h2>
+
+        <form action = "/tournaments/createtournament" method = "post">
+            
+            <div>
+                <label for = "tournamentName">Name:</label>
+                <input name = "tournamentName" id = "tournamentName" type = "text" required /> 
+            </div>
+
+            <div>
+                <label for = "tournamentDate">Date:</label>
+                <input name = "tournamentDate" id = "tournamentDate" type = "date" required /> 
+            </div>
+
+            <div>
+                <label for = "tournamentDescription">Description:</label>
+                <input name = "tournamentDescription" id = "tournamentDescription" type = "text" required /> 
+            </div>
+
+            <div>
+                <label for = "tournamentSize">Size:</label>
+                <input name = "tournamentSize" id = "tournamentSize" type = "number"  list = "possibleSizes" required /> 
+            </div>
+
+            <div>
+                <input type = "submit" value = "Create!" />
+            </div>
+
+        </form>
+    </div>
+
+    {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class=flashes>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+{% endblock %}
