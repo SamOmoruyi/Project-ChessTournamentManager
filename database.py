@@ -11,24 +11,10 @@ class DataBaseHandler:
         #shortening sql.connect so it can be easier to type (not important now but needs to stay consistent for later)
         with self.connect() as conn:  
             conn.cursor()
-            #users creation 
-            conn.execute("""CREATE TABLE IF NOT EXISTS users (
-                         userID INTEGER PRIMARY KEY AUTOINCREMENT,
-                         userName TEXT UNIQUE NOT NULL CHECK(length(userName) > 3),
-                         email TEXT NOT NULL,
-                         password TEXT NOT NULL CHECK(length(password) > 7)
-                         );""")
-            #tournaments creation
-            conn.execute("""CREATE TABLE IF NOT EXISTS tournaments (
-                         tournamentID INTEGER PRIMARY KEY AUTOINCREMENT,
-                         userID INTERGER NOT NULL,
-                         tournamentName TEXT NOT NULL,
-                         tournamentStatus TEXT NOT NULL DEFAULT incomplete CHECK(tournamentStatus IN ("incomplete,complete")),
-                         tournamentDate TEXT NOT NULL,
-                         tournamentLocation TEXT NOT NULL,
-                         FOREIGN KEY (userID) REFERENCES users(userID) ON DELETE CASCADE
-                         );""")
-            #commit changes and close connection
+            self.createUsersTable()
+            self.createTournamentsTable()
+            self.createPlayersTable()
+            self.createMatchesTable()
             conn.commit()
     #making function which places user into table
     def createUser(self, userName, email, password):
@@ -65,7 +51,7 @@ class DataBaseHandler:
                 results = conn.execute("SELECT userID FROM users WHERE username = ? AND password = ?", (username, password))
                 # fetching results so that other functions can make use of them
                 userID = results.fetchone()
-                # conn.commit()
+                conn.commit()
                 if userID != None:
                     return True, userID[0]
                 else:
@@ -80,10 +66,11 @@ class DataBaseHandler:
             conn.execute("""CREATE TABLE IF NOT EXISTS tournaments (
                          tournamentID INTEGER PRIMARY KEY AUTOINCREMENT,
                          userID INTEGER NOT NULL,
-                         tournamentName UNIQUE TEXT NOT NULL,
+                         tournamentName TEXT UNIQUE NOT NULL,
+                         tournamentMaker TEXT NOT NULL,
                          tournamentDescription TEXT NOT NULL,
-                         tournamentDate TEXT NOT NULL,
-                         tournamentSize INTEGER NOT NULL CHECK(tournamentSize IN ("2,4,8,16")),
+                         tournamentDate DATE NOT NULL,
+                         tournamentSize INTEGER NOT NULL,
                          FOREIGN KEY (userID) REFERENCES users(userID) ON DELETE CASCADE
                          );""")
             conn.commit()
@@ -112,20 +99,35 @@ class DataBaseHandler:
             tournaments = results.fetchall()
             return tournaments
 
-    def addTournament(self, userID, tournamentName, tournamentDate, tournamentDescription, tournamentSize):
-        with self.connect() as conn:
-            conn.cursor()
-            conn.execute("INSERT INTO tournaments (userID, tournamentName, tournamentDate, tournamentDescription, tournamentSize) VALUES (?, ?, ?, ?, ?)", (userID, tournamentName, tournamentDate, tournamentDescription, tournamentSize))
-            conn.commit()
-            
+    def addTournament(self, userID, tournamentName, tournamentMaker, tournamentDate, tournamentDescription, tournamentSize):
+        try:
+            with self.connect() as conn:
+                conn.cursor()
+                conn.execute("INSERT INTO tournaments (userID, tournamentName, tournamentMaker, tournamentDate, tournamentDescription, tournamentSize) VALUES (?, ?, ?, ?, ?, ?)", (userID, tournamentName, tournamentMaker, tournamentDate, tournamentDescription, tournamentSize))
+                conn.commit()
+                return True, None
+        except sql.IntegrityError as error:
+            print(error)
+            if "UNIQUE" in str(error):
+                print("unique-error")
+                return False, "unique-error"
+            else:
+                print("integrity-error")
+                return False, "integrity-error"
+        except Exception as error:
+            print(error)
+            print("unkown-error")
+            return False, "unknown-error"
+        
     def createPlayersTable(self):
         with self.connect() as conn:
             conn.cursor()
             conn.execute("""CREATE TABLE IF NOT EXISTS players (
                          playerID INTEGER PRIMARY KEY AUTOINCREMENT,
-                         playerName TEXT NOT NULL,
                          tournamentID INTEGER NOT NULL,
-                         FOREIGN KEY tournamentID REFERENCES tournaments(tournamentID) ON DELETE CASCADE)""")
+                         playerName TEXT NOT NULL,
+                         FOREIGN KEY (tournamentID) REFERENCES tournaments(tournamentID) ON DELETE CASCADE
+                         )""")
             conn.commit()
 
     def addPlayer(self, playerName, tournamentID):
@@ -137,18 +139,18 @@ class DataBaseHandler:
         with self.connect() as conn:
             conn.cursor()
             conn.execute("""CREATE TABLE IF NOT EXISTS matches (
-                         matchID INTEGER NOT NULL AUTOINCREMENT,
+                         matchID INTEGER PRIMARY KEY AUTOINCREMENT,
                          topID INTEGER,
                          botID INTEGER,
                          tournamentID INTEGER NOT NULL,
                          matchOutcome INTEGER CHECK(matchOutcome IN ("1,0")),
-                         FOREIGN KEY tournamentID REFERENCES tournaments(tournamentID) ON DELETE CASCADE)""")
+                         FOREIGN KEY (tournamentID) REFERENCES tournaments(tournamentID) ON DELETE CASCADE)""")
             conn.commit()
 
     def createMatches(self, tournamentID):
         with self.connect() as conn:
             conn.cursor()
-            conn.execute("INSERT INTO matches (tournamentID) VALUES (?)",(tournamentID))
+            conn.execute("INSERT INTO matches (tournamentID) VALUES (?)",(tournamentID,))
             conn.commit()
 
     def updateTopID(self, tournamentID, newTopID, matchID):
@@ -175,40 +177,34 @@ class DataBaseHandler:
             conn.execute("UPDATE matches SET outcome = 0 WHERE tournamentID = ? AND matchID = ?", (newOutcome, tournamentID, matchID))
             conn.commit()
 
-    def fetchUserID(self, username):
-        try:
-            with self.connect() as conn:
-                results = conn.execute("SELECT userID FROM users WHERE username = ?", (username))
-                userID = results.fetchone()
-                if userID != None:
-                    return True, userID[0]
-                else:
-                    return False, None
-
-        except:
-            return False, None
-
     def fetchTournamentID(self, tournamentName):
         with self.connect() as conn:
             conn.cursor()
-            results = conn.execute("SELECT tournamentID FROM tournaments WHERE tournamentName = ?", (tournamentName))
+            results = conn.execute("SELECT tournamentID FROM tournaments WHERE tournamentName = ?", (tournamentName,))
             tournamentID = results.fetchone()
             return tournamentID
     
     def fetchTournamentSize(self,tournamentID):
         with self.connect() as conn:
             conn.cursor()
-            results = conn.execute("SELECT tournamentSize FROM tournaments WHERE tournamentID = ?", (tournamentID))
+            results = conn.execute("SELECT tournamentSize FROM tournaments WHERE tournamentID = ?", (tournamentID,))
             tournamentSize = results.fetchone()
             return tournamentSize
         
-    def fetchAllMatchIDs(self):
+    def fetchAllMatchIDs(self, tournamentID):
         with self.connect() as conn:
             conn.cursor()
-            results = conn.execute("SELECT matchID FROM matches WHERE tournamentID = ?")
+            results = conn.execute("SELECT matchID FROM matches WHERE tournamentID = ?", (tournamentID,))
             matchIDs = results.fetchall()
             return matchIDs
 
+    def fetchAllPlayerIDs(self, tournamentID):
+        with self.conect() as conn:
+            conn.cursor()
+            results = conn.execute("SELECT playerID FROM players WHERE tournamentID = ?", (tournamentID,))
+            playerIDs = results.fetchall()
+            return playerIDs
+        
 db = DataBaseHandler()
 db.createTable()
 #db.deleteUser()

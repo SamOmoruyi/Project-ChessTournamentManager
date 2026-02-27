@@ -15,7 +15,8 @@ def authoriseUser():
     # the authorisation proccess
     if success:
         session["currentUser"] = username
-        return redirect(url_for("pages.dashboard"))
+        session["userID"] = userID
+        return redirect(url_for("pages.dashboard", username = username, userID = userID))
     flash("Login was unsuccessful!")    
     return redirect(url_for("pages.login"))
  
@@ -43,6 +44,7 @@ def createUser():
     db = DataBaseHandler()
     success, errorType = db.createUser(username, email, password)
     if success:
+        flash("Account has been made - Please login in using the username and password that were just made.")
         return redirect(url_for("pages.dashboard")) 
     if errorType == "integrity-error":
         flash("Invalid data has been entered - Please try again")

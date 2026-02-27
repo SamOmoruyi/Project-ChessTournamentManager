@@ -1,5 +1,5 @@
 from database import DataBaseHandler
-import flask
+from flask import Blueprint, redirect, render_template, session, url_for, flash, request
 import math
 
 tournaments = Blueprint("tournaments",__name__,url_prefix="/tournaments")
@@ -11,6 +11,7 @@ def createTournament():
     tournamentDescription = formDeatils.get("tournamentDescription")
     tournamentDate = formDeatils.get("tournamentDate")
     tournamentSize = formDeatils.get("tournamentSize")
+    tournamentSize = int(tournamentSize)
     errors = False
     possibleSizes = [2,4,8,16]
     if tournamentSize not in possibleSizes:
@@ -30,11 +31,15 @@ def createTournament():
         errors = True
     
     if errors:
-        return redirect(url_for(pages.createTournament))
+        return redirect(url_for("pages.createTournament"))
     db = DataBaseHandler()
     username = session["currentUser"]
-    userID = db.fetchUserID(username)
-    success, errorType = db.addTournament(userID, tournamentName, tournamentDate, tournamentDescription, tournamentSize)
+    userID = session["userID"]
+    success, errorType, = db.addTournament(userID, tournamentName, username, tournamentDate, tournamentDescription, tournamentSize)
+    session["tournamentSize"] = tournamentSize
+    session["tournamentName"] = tournamentName
+    session["tournamentID"] = db.fetchTournamentID(tournamentName)
+    print(str(session["tournamentID"]))
     if success:
         return redirect(url_for("pages.tournamentplayerselection"))
     if errorType == "integrity-error":
@@ -43,20 +48,61 @@ def createTournament():
         flash("Tournament name taken - Please use a different username")
     else:
         flash("An error has occurred")
-    return redirect(url_for("pages.createtournament", tournamentName = tournamentName))
+    return redirect(url_for("pages.createplayers"))
 
 @tournaments.route("/createplayers", methods = ["POST"])
 def createPlayers():
     db = DataBaseHandler()
-    tournamentName = session[tournamentName] 
-    tournamentID = db.fetchTournamentID(tournamentName)
-    tournamentSize = db.fetchTournamentSize(tournamentID)
-    for i in range(tournamentSize - 1):
+    tournamentName = session["tournamentName"] 
+    tournamentID = session["tournamentID"]
+    tournamentSize = session["tournamentSize"]
+    n = 1
+    while n != tournamentSize - 1:
         formDetails = request.form
         playerName = formDetails.get("playerName")
         db.addPlayer(playerName, tournamentID)
+        n = n + 1
     #bit that makes the matches
-    for i in range(tournamentSize - 2):
-        db.createMatches(tournamentID)    
-    return redirect(url_for("pages.bracketview", tournamentID = tournamentID, tournamentSize = tournamentSize, ))
-
+    while n != int(tournamentSize - 1):
+        db.createMatches(tournamentID)
+        n = n + 1
+    numberOfrounds = math.log2(tournamentSize)    
+    n = numberOfrounds
+    matchIDs = db.fetchAllMatchIDs(tournamentID)
+    playerIDs = db.fetchAllPlayerIDs(tournamentID)
+    if n == 1:
+        db.updateTopID(playerIDs[0], matchIDs[0])
+        db.updateBotID(playerIDs[1], matchIDs[0])
+    if n == 2:
+        db.updateTopID(playerIDs[0], matchIDs[0])
+        db.updateBotID(playerIDs[1], matchIDs[0])
+        db.updateTopID(playerIDs[2], matchIDs[1])
+        db.updateBotID(playerIDs[3], matchIDs[1])
+    if n == 3:
+        db.updateTopID(playerIDs[0], matchIDs[0])
+        db.updateBotID(playerIDs[1], matchIDs[0])
+        db.updateTopID(playerIDs[2], matchIDs[1])
+        db.updateBotID(playerIDs[3], matchIDs[1])
+        db.updateTopID(playerIDs[4], matchIDs[2])
+        db.updateBotID(playerIDs[5], matchIDs[2])
+        db.updateTopID(playerIDs[6], matchIDs[3])
+        db.updateBotID(playerIDs[7], matchIDs[3])
+    if n == 4:
+        db.updateTopID(playerIDs[0], matchIDs[0])
+        db.updateBotID(playerIDs[1], matchIDs[0])
+        db.updateTopID(playerIDs[2], matchIDs[1])
+        db.updateBotID(playerIDs[3], matchIDs[1])
+        db.updateTopID(playerIDs[4], matchIDs[2])
+        db.updateBotID(playerIDs[5], matchIDs[2])
+        db.updateTopID(playerIDs[6], matchIDs[3])
+        db.updateBotID(playerIDs[7], matchIDs[3])
+        db.updateTopID(playerIDs[8], matchIDs[4])
+        db.updateBotID(playerIDs[9], matchIDs[4])
+        db.updateTopID(playerIDs[10], matchIDs[5])
+        db.updateBotID(playerIDs[11], matchIDs[5])
+        db.updateTopID(playerIDs[12], matchIDs[6])
+        db.updateBotID(playerIDs[13], matchIDs[6])
+        db.updateTopID(playerIDs[14], matchIDs[7])
+        db.updateBotID(playerIDs[15], matchIDs[7])
+    
+    return redirect(url_for("pages.bracketview", tournamentID = tournamentID, tournamentSize = tournamentSize, tournamentName = tournamentName))

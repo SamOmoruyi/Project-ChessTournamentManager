@@ -5,14 +5,17 @@
 {% endblock %}
 
 {% block content %}
-
-    {% if not tasks %}
-        <p>No tasks set at the moment</p>
+    <div>
+        <a href= "createtournament">Create!</a>
+    </div>
+    {% if not tournaments %}
+        <p>No tournaments at the moment</p>
     {% else %}
         <table>
             <thead>
                 <tr>
                     <th>Tournament Name</th>
+                    <th>Tournament Owner</th>
                     <th>Description</th>
                     <th>Size</th>
                     <th>Date</th>
@@ -21,10 +24,11 @@
             <tbody>
                 {% for tournament in tournaments %}
                     <tr>
-                        <td>{{tournament[2]}}</td>
-                        <td>{{tournament[3]}}</td>
-                        <td>{{tournament[4]}}</td>
-                        <td>{{tournament[5]}}</td>
+                        <td>{{tournaments[2]}}</td>
+                        <td>{{tournaments[3]}}</td>
+                        <td>{{tournaments[4]}}</td>
+                        <td>{{tournaments[5]}}</td>
+                        <td>{{tournaments[6]}}</td>
                     </tr>
                 {% endfor %}
             </tbody>
