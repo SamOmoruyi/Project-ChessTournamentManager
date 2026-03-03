@@ -3,19 +3,170 @@
 {% endblock %}
 
     {% block content %}
-        <div> 
-            Round of 16
+        {% if tournamentSize = 2 %}
+        <div>
+            <h4> Final </h4>
+            <div>
+            {{bracket[?][?][?]}}
+            {{bracket[?][?][?]}}
+            </div>
         </div>
 
-        <div> 
-            Quarter-Finals
+        {% if tournamentSize = 4 %}
+        <div>
+            <h4> Semi-Finals </h4>
+            <div>
+            {{bracket[?][?][?]}}
+            {{bracket[?][?][?]}}
+            </div>
+
+            <div>
+            {{bracket[?][?][?]}}
+            {{bracket[?][?][?]}}
+            </div>
         </div>
 
-        <div> 
-            Semi-Finals
+        <div>
+            <h4> Final </h4>
+            <div>
+            {{bracket[?][?][?]}}
+            {{bracket[?][?][?]}}
+            </div>
         </div>
 
-        <div> 
-            Final
+        {% if tournamentSize = 8 %}
+        <div>
+            <h4> Quarter-Finals </h4>
+            <div>
+            {{bracket[?][?][?]}}
+            {{bracket[?][?][?]}}
+            </div>
+
+            <div>
+            {{bracket[?][?][?]}}
+            {{bracket[?][?][?]}}
+            </div>
+
+            <div>
+            {{bracket[?][?][?]}}
+            {{bracket[?][?][?]}}
+            </div>
+
+            <div>
+            {{bracket[?][?][?]}}
+            {{bracket[?][?][?]}}
+            </div>
         </div>
+
+        <div>
+            <h4> Semi-Finals </h4>
+            <div>
+            {{bracket[?][?][?]}}
+            {{bracket[?][?][?]}}
+            </div>
+
+            <div>
+            {{bracket[?][?][?]}}
+            {{bracket[?][?][?]}}
+            </div>
+        </div>
+
+        <div>
+            <h4> Final </h4>
+            <div>
+            {{bracket[?][?][?]}}
+            {{bracket[?][?][?]}}
+            </div>
+        </div>
+
+        {% if tournamentSize = 16 %}
+        <div>
+            <h4> Round of 16 </h4>
+            <div>
+            {{bracket[?][?][?]}}
+            {{bracket[?][?][?]}}
+            </div>
+
+            <div>
+            {{bracket[?][?][?]}}
+            {{bracket[?][?][?]}}
+            </div>
+
+            <div>
+            {{bracket[?][?][?]}}
+            {{bracket[?][?][?]}}
+            </div>
+
+            <div>
+            {{bracket[?][?][?]}}
+            {{bracket[?][?][?]}}
+            </div>
+
+            <div>
+            {{bracket[?][?][?]}}
+            {{bracket[?][?][?]}}
+            </div>
+
+            <div>
+            {{bracket[?][?][?]}}
+            {{bracket[?][?][?]}}
+            </div>
+
+            <div>
+            {{bracket[?][?][?]}}
+            {{bracket[?][?][?]}}
+            </div>
+
+            <div>
+            {{bracket[?][?][?]}}
+            {{bracket[?][?][?]}}
+            </div>
+        </div>
+
+        <div>
+            <h4> Quarter-Finals </h4>
+            <div>
+            {{bracket[?][?][?]}}
+            {{bracket[?][?][?]}}
+            </div>
+
+            <div>
+            {{bracket[?][?][?]}}
+            {{bracket[?][?][?]}}
+            </div>
+
+            <div>
+            {{bracket[?][?][?]}}
+            {{bracket[?][?][?]}}
+            </div>
+
+            <div>
+            {{bracket[?][?][?]}}
+            {{bracket[?][?][?]}}
+            </div>
+        </div>
+
+        <div>
+            <h4> Semi-Finals </h4>
+            <div>
+            {{bracket[?][?][?]}}
+            {{bracket[?][?][?]}}
+            </div>
+
+            <div>
+            {{bracket[?][?][?]}}
+            {{bracket[?][?][?]}}
+            </div>
+        </div>
+
+        <div>
+            <h4> Final </h4>
+            <div>
+            {{bracket[?][?][?]}}
+            {{bracket[?][?][?]}}
+            </div>
+        </div>
+
+        <a href="/tournaments/updateoutcome">Make a change</a>
+
     {% endblock %}

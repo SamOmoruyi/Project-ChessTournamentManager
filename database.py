@@ -204,7 +204,19 @@ class DataBaseHandler:
             results = conn.execute("SELECT playerID FROM players WHERE tournamentID = ?", (tournamentID,))
             playerIDs = results.fetchall()
             return playerIDs
+    
+    def fetchTopandBotIDs(self, matchID):
+        with self.connect() as conn:
+            conn.cursor()
+            results = conn.execute("SELECT topID AND SELECT botID FROM matches WHERE matchID = ?", (matchID,))
+            topAndBotIDs = results.fetchall()
+            return topAndBotIDs
         
+    def fetchPlayerName(self, playerID):
+        with self.connect as conn:
+            conn.cursor()
+            results = conn.execute("SELECT playerName from players WHERE playerID = ?",(playerID,))
+            playerNames = results.fetchall()
+            return playerNames
 db = DataBaseHandler()
 db.createTable()
-#db.deleteUser()

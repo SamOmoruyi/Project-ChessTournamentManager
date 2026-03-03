@@ -1,7 +1,7 @@
 {%extends "base.html" %}
 
 {% block title %}
-    TempTitle : ?
+    TempTitle : Player Selection
 {% endblock %}
 
 {% block content%}
@@ -10,213 +10,30 @@
 
 <h2> Please input details for tournament you would like to make</h2>
 
-     {% for i in range(0,tournamentSize) %}
-        <p>{{i}}</p>
+    {% for i in range(1,tournamentSize + 1) %}
+    <form action = "/tournaments/createplayers" method = "post">
+            
+            <div>
+                <label for = "playerName"> Player {{i}}: </label>
+                <input name = "playerName" id = "playerName" type = "text" required /> 
+            </div>
     
-     {% endfor %}
-    <!-- {% if tournamentSize = 2 %}
+    {% endfor %}
         <div>
-
-            <form action = "/tournaments/createplayers" method = "post">
-            
-            <div>
-                <label for = "playerName">Player ?:</label>
-                <input name = "playerName" id = "playerName" type = "text" required /> 
-            </div>
-
-            <div>
-                <label for = "playerName">Player ?:</label>
-                <input name = "playerName" id = "playerName" type = "text" required /> 
-            </div>
-
-            <div>
-                <input type = "submit" value = "Create!" />
-            </div>
-
-            </form>
-        </div>    
-    {% if tournamentSize = 4 %}
-        <div>
-            <h1>TempTitle </h1>
-
-            <h2> Please input details for tournament you would like to make</h2>
-
-            <form action = "" method = "post">
-            
-            <div>
-                <label for = "playerName">Player ?:</label>
-                <input name = "playerName" id = "playerName" type = "text" required /> 
-            </div>
-
-            <div>
-                <label for = "playerName">Player ?:</label>
-                <input name = "playerName" id = "playerName" type = "text" required /> 
-            </div>
-
-            <div>
-                <label for = "playerName">Player ?:</label>
-                <input name = "playerName" id = "playerName" type = "text" required /> 
-            </div>
-
-            <div>
-                <label for = "playerName">Player ?:</label>
-                <input name = "playerName" id = "playerName" type = "text" required /> 
-            </div>
-
-            <div>
-                <input type = "submit" value = "Create!" />
-            </div>
-
-            </form>
+            <input type = "submit" value = "Sign-Up!" />
         </div>
-    {% if tournamentSize = 8 %}
-        <div>
-            <h1>TempTitle </h1>
+    {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
 
-            <h2> Please input details for tournament you would like to make</h2>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class=flashes>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
 
-            <form action = "" method = "post">
-            
-            <div>
-                <label for = "playerName">Player ?:</label>
-                <input name = "playerName" id = "playerName" type = "text" required /> 
-            </div>
-
-            <div>
-                <label for = "playerName">Player ?:</label>
-                <input name = "playerName" id = "playerName" type = "text" required /> 
-            </div>
-
-            <div>
-                <label for = "playerName">Player ?:</label>
-                <input name = "playerName" id = "playerName" type = "text" required /> 
-            </div>
-
-            <div>
-                <label for = "playerName">Player ?:</label>
-                <input name = "playerName" id = "playerName" type = "text" required /> 
-            </div>
-
-            <div>
-                <label for = "playerName">Player ?:</label>
-                <input name = "playerName" id = "playerName" type = "text" required /> 
-            </div>
-
-            <div>
-                <label for = "playerName">Player ?:</label>
-                <input name = "playerName" id = "playerName" type = "text" required /> 
-            </div>
-
-            <div>
-                <label for = "playerName">Player ?:</label>
-                <input name = "playerName" id = "playerName" type = "text" required /> 
-            </div>
-
-            <div>
-                <label for = "playerName">Player ?:</label>
-                <input name = "playerName" id = "playerName" type = "text" required /> 
-            </div>
-
-            <div>
-                <input type = "submit" value = "Create!" />
-            </div>
-
-            </form>
-        </div>
-    {% else %}
-        <div>
-            <h1>TempTitle </h1>
-
-            <h2> Please input details for tournament you would like to make</h2>
-
-            <form action = "" method = "post">
-            
-            <div>
-                <label for = "playerName">Player ?:</label>
-                <input name = "playerName" id = "playerName" type = "text" required /> 
-            </div>
-
-            <div>
-                <label for = "playerName">Player ?:</label>
-                <input name = "playerName" id = "playerName" type = "text" required /> 
-            </div>
-
-            <div>
-                <label for = "playerName">Player ?:</label>
-                <input name = "playerName" id = "playerName" type = "text" required /> 
-            </div>
-
-            <div>
-                <label for = "playerName">Player ?:</label>
-                <input name = "playerName" id = "playerName" type = "text" required /> 
-            </div>
-
-            <div>
-                <label for = "playerName">Player ?:</label>
-                <input name = "playerName" id = "playerName" type = "text" required /> 
-            </div>
-
-            <div>
-                <label for = "playerName">Player ?:</label>
-                <input name = "playerName" id = "playerName" type = "text" required /> 
-            </div>
-
-            <div>
-                <label for = "playerName">Player ?:</label>
-                <input name = "playerName" id = "playerName" type = "text" required /> 
-            </div>
-
-            <div>
-                <label for = "playerName">Player ?:</label>
-                <input name = "playerName" id = "playerName" type = "text" required /> 
-            </div>
-
-            <div>
-                <label for = "playerName">Player ?:</label>
-                <input name = "playerName" id = "playerName" type = "text" required /> 
-            </div>
-
-            <div>
-                <label for = "playerName">Player ?:</label>
-                <input name = "playerName" id = "playerName" type = "text" required /> 
-            </div>
-
-            <div>
-                <label for = "playerName">Player ?:</label>
-                <input name = "playerName" id = "playerName" type = "text" required /> 
-            </div>
-
-            <div>
-                <label for = "playerName">Player ?:</label>
-                <input name = "playerName" id = "playerName" type = "text" required /> 
-            </div>
-
-            <div>
-                <label for = "playerName">Player ?:</label>
-                <input name = "playerName" id = "playerName" type = "text" required /> 
-            </div>
-
-            <div>
-                <label for = "playerName">Player ?:</label>
-                <input name = "playerName" id = "playerName" type = "text" required /> 
-            </div>
-
-            <div>
-                <label for = "playerName">Player ?:</label>
-                <input name = "playerName" id = "playerName" type = "text" required /> 
-            </div>
-
-            <div>
-                <label for = "playerName">Player ?:</label>
-                <input name = "playerName" id = "playerName" type = "text" required /> 
-            </div>
-
-            <div>
-                <input type = "submit" value = "Create!" />
-            </div>
-
-            </form>
-        </div>
-    {% endif %}
-   -->
 {% endblock %}

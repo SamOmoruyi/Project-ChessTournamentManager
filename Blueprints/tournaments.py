@@ -41,14 +41,14 @@ def createTournament():
     session["tournamentID"] = db.fetchTournamentID(tournamentName)
     print(str(session["tournamentID"]))
     if success:
-        return redirect(url_for("pages.tournamentplayerselection"))
+        return redirect(url_for("pages.createPlayers"))
     if errorType == "integrity-error":
         flash("Invalid data has been entered - Please try again")
     elif errorType == "unique-error":
         flash("Tournament name taken - Please use a different username")
     else:
         flash("An error has occurred")
-    return redirect(url_for("pages.createplayers"))
+    return redirect(url_for("pages.createTournament"))
 
 @tournaments.route("/createplayers", methods = ["POST"])
 def createPlayers():
@@ -57,12 +57,13 @@ def createPlayers():
     tournamentID = session["tournamentID"]
     tournamentSize = session["tournamentSize"]
     n = 1
-    while n != tournamentSize - 1:
+    while n != tournamentSize:
         formDetails = request.form
         playerName = formDetails.get("playerName")
+        print(playerName)
         db.addPlayer(playerName, tournamentID)
         n = n + 1
-    #bit that makes the matches
+    #bit that makes the first round of matches
     while n != int(tournamentSize - 1):
         db.createMatches(tournamentID)
         n = n + 1
@@ -106,3 +107,7 @@ def createPlayers():
         db.updateBotID(playerIDs[15], matchIDs[7])
     
     return redirect(url_for("pages.bracketview", tournamentID = tournamentID, tournamentSize = tournamentSize, tournamentName = tournamentName))
+
+@tournaments.route("/updatetournament", methods = ["POST"])
+def updateTournament():
+    pass

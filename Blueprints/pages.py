@@ -109,6 +109,13 @@ def onView():
             roundOf16.append(matchIDs[13])
             roundOf16.append(matchIDs[14])
         n = n - 1
+        for i in range(0, (int(tournamentSize) - 1)):
+            topAndBotIDs = db.fetchTopandBotIDs(matchIDs[i])
+            playerNames = []
+            playerNames.append(db.fetchPlayerName(topAndBotIDs[0]))
+            playerNames.append(db.fetchPlayerName(topAndBotIDs[1]))
+            matchIDs[i] = playerNames
+            
         print(bracket)
         bracket = session["bracket"]
     return render_template("tournamentbracketview", bracket = bracket, db = db, tournamentID = tournamentID)
