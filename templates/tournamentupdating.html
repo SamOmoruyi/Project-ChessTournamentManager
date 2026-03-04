@@ -1,0 +1,43 @@
+{%extends "base.html"%}
+
+{% block title %}
+    TempTitle : Login
+{% endblock %}
+
+{% block content %}
+    <div>
+        <h1>TempTitle </h1>
+
+        <h2> Please input your details to login</h2>
+
+        <form action = "/tournaments/updatetournament" method = "post">
+            
+            <div>
+                <label for = "winner">Winner of Match:</label>
+                <input name = "winner" id = "winner" type = "text" required /> 
+            </div>
+
+            <div>
+                <label for = "roundnumber">Password:</label>
+                <input name = "roundnumber" id = "roundnumber" type = "number" required /> 
+            </div>
+
+            <div>
+                <input type = "submit" value = "Submit changes" />
+            </div>
+
+        </form>
+        <p> No account? <a href = "/bracketview">Click here to go back if you would like to not make a change</a> </p>
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class=flashes>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+{% endblock %}

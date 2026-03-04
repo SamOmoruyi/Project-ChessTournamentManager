@@ -140,10 +140,10 @@ class DataBaseHandler:
             conn.cursor()
             conn.execute("""CREATE TABLE IF NOT EXISTS matches (
                          matchID INTEGER PRIMARY KEY AUTOINCREMENT,
-                         topID INTEGER,
-                         botID INTEGER,
+                         topID INTEGER DEFAULT NULL,
+                         botID INTEGER DEFAULT NULL,
                          tournamentID INTEGER NOT NULL,
-                         matchOutcome INTEGER CHECK(matchOutcome IN ("1,0")),
+                         winner TEXT DEFAULT NULL,
                          FOREIGN KEY (tournamentID) REFERENCES tournaments(tournamentID) ON DELETE CASCADE)""")
             conn.commit()
 
@@ -165,17 +165,12 @@ class DataBaseHandler:
             conn.execute("UPDATE matches SET botID = ? WHERE tournamentID = ? AND matchID = ?", (newBotID, tournamentID, matchID))
             conn.commit()
 
-    def updateOutcomeTrue(self, tournamentID, newOutcome, matchID):
+    def updateWinner(self, tournamentID, newWinner, matchID):
         with self.connect() as conn:
             conn.cursor()
-            conn.execute("UPDATE matches SET outcome = 1 WHERE tournamentID = ?", (newOutcome, tournamentID, matchID))
+            conn.execute("UPDATE matches SET winner = ? WHERE tournamentID = ?", (newWinner, tournamentID, matchID))
             conn.commit()
-
-    def updateOutcomeFalse(self, tournamentID, newOutcome, matchID):
-        with self.connect() as conn:
-            conn.cursor()
-            conn.execute("UPDATE matches SET outcome = 0 WHERE tournamentID = ? AND matchID = ?", (newOutcome, tournamentID, matchID))
-            conn.commit()
+            return newWinner
 
     def fetchTournamentID(self, tournamentName):
         with self.connect() as conn:
@@ -218,5 +213,12 @@ class DataBaseHandler:
             results = conn.execute("SELECT playerName from players WHERE playerID = ?",(playerID,))
             playerNames = results.fetchall()
             return playerNames
+    
+    def fetchWinner(self, newWinner, tournamentID):
+        with self.connect() as conn:
+            conn.cursor()
+            results = conn.execute("SELECT winner FROM matches WHERE topID = ? OR botID = ? AND tournamentID = ?",(newWinner, tournamentID))
+            winner = results.fetchone()
+            return winner
 db = DataBaseHandler()
 db.createTable()

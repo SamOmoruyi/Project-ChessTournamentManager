@@ -118,4 +118,10 @@ def onView():
             
         print(bracket)
         bracket = session["bracket"]
-    return render_template("tournamentbracketview", bracket = bracket, db = db, tournamentID = tournamentID)
+    return render_template("tournamentbracketview.html", bracket = bracket, db = db, tournamentID = tournamentID, tournamentSize = tournamentSize)
+
+@pages.route("/updatetournament")
+def onUpdate():
+    bracket = session["bracket"]
+    tournamentID = session["tournamentID"]
+    return render_template("tournamentupdating.html", bracket = bracket, tournamentID = tournamentID)

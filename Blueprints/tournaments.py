@@ -39,7 +39,6 @@ def createTournament():
     session["tournamentSize"] = tournamentSize
     session["tournamentName"] = tournamentName
     session["tournamentID"] = db.fetchTournamentID(tournamentName)
-    print(str(session["tournamentID"]))
     if success:
         return redirect(url_for("pages.createPlayers"))
     if errorType == "integrity-error":
@@ -110,4 +109,31 @@ def createPlayers():
 
 @tournaments.route("/updatetournament", methods = ["POST"])
 def updateTournament():
-    pass
+    formDetails = request.form
+    winner = formDetails.get("winner")
+    roundNumber = formDetails.get("roundnumber")
+    int(roundNumber) = int(roundNumber) - 1
+    if int(roundNumber) < 0:
+        flash("Round number is invalid - Please try again.")
+        return redirect(url_for("pages.updatetournament"))
+    
+    elif int(roundNumber) > 3:
+        flash("Round number is invalid - Please try again.")
+        return redirect(url_for("pages.updatetournament"))
+    
+    else:
+        db = DataBaseHandler()
+        tournamentID = session["tournamentID"]
+        if db.fetchWinner(winner, tournamentID) == "":
+            matchIDs = db.fetchAllMatchIDs()
+            if roundNumber == 0:
+                matchID = matchIDs[0]
+            elif roundNumber == 1:
+                pass
+            elif roundNumber == 2:
+                pass
+            elif roundNumber == 3:
+                pass
+        else:
+            flash("Match already has a winner - Please try again.")
+            return redirect(url_for("pages.updatetournament"))

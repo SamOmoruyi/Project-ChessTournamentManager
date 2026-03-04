@@ -20,6 +20,7 @@ def roundmaker():
             bracket.append(roundOf16)
         n = n - 1
     print(bracket)
+    print(len(bracket))
 
 
 def connect():
