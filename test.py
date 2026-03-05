@@ -7,21 +7,26 @@ def roundmaker():
     n = int(input("Type no. of rounds"))
     while n != 0:
         if n == 1:
-            final = round
+            final = []
             bracket.append(final)
         if n == 2:
-            semiFinal = round
+            semiFinal = []
             bracket.append(semiFinal)
         if n == 3:
-            quarterFinal = round
+            quarterFinal = []
             bracket.append(quarterFinal)
         if n == 4:
-            roundOf16 = round
+            roundOf16 = []
             bracket.append(roundOf16)
         n = n - 1
+    y = "find me!"
+    final.append("find me!")
+    final.append("other")
     print(bracket)
     print(len(bracket))
-
+    if y in final:
+         print("found successfully :)")
+         print(final.index(y))
 
 def connect():
         return sql.connect(dbName)

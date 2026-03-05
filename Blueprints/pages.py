@@ -72,19 +72,20 @@ def onView():
     bracket = []
     numberOfRounds = math.log2(tournamentSize)
     n = numberOfRounds
-    round = []
     while n != 0:
         if n == 1:
-            final = round
+            final = []
             bracket.append(final)
+            tournamentWinner = []
+            bracket.append(tournamentWinner)
         if n == 2:
-            semiFinal = round
+            semiFinal = []
             bracket.append(semiFinal)
         if n == 3:
-            quarterFinal = round
+            quarterFinal = []
             bracket.append(quarterFinal)
         if n == 4:
-            roundOf16 = round
+            roundOf16 = []
             bracket.append(roundOf16)
         n = n - 1
     n = numberOfRounds
@@ -109,13 +110,14 @@ def onView():
             roundOf16.append(matchIDs[13])
             roundOf16.append(matchIDs[14])
         n = n - 1
+        print(matchIDs)
         for i in range(0, (int(tournamentSize) - 1)):
             topAndBotIDs = db.fetchTopandBotIDs(matchIDs[i])
             playerNames = []
             playerNames.append(db.fetchPlayerName(topAndBotIDs[0]))
             playerNames.append(db.fetchPlayerName(topAndBotIDs[1]))
             matchIDs[i] = playerNames
-            
+            print(matchIDs)
         print(bracket)
         bracket = session["bracket"]
     return render_template("tournamentbracketview.html", bracket = bracket, db = db, tournamentID = tournamentID, tournamentSize = tournamentSize)

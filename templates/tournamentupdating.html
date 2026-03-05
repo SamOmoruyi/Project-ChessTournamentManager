@@ -5,6 +5,13 @@
 {% endblock %}
 
 {% block content %}
+    <datalist id = "possibleRounds"> 
+        <option value = "1">
+        <option value = "2">
+        <option value = "3">
+        <option value = "4">
+    </datalist>
+
     <div>
         <h1>TempTitle </h1>
 
@@ -19,7 +26,7 @@
 
             <div>
                 <label for = "roundnumber">Password:</label>
-                <input name = "roundnumber" id = "roundnumber" type = "number" required /> 
+                <input name = "roundnumber" id = "roundnumber" type = "number" list = "possibleRounds" required/> 
             </div>
 
             <div>
@@ -27,7 +34,7 @@
             </div>
 
         </form>
-        <p> No account? <a href = "/bracketview">Click here to go back if you would like to not make a change</a> </p>
+        <p> No changes? <a href = "/bracketview">Click here to go back if you would like to not make a change</a> </p>
     </div>
 
     {% with messages = get_flashed_messages() %}

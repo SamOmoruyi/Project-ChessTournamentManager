@@ -112,7 +112,7 @@ def updateTournament():
     formDetails = request.form
     winner = formDetails.get("winner")
     roundNumber = formDetails.get("roundnumber")
-    int(roundNumber) = int(roundNumber) - 1
+    int(roundNumber) == int(roundNumber) - 1
     if int(roundNumber) < 0:
         flash("Round number is invalid - Please try again.")
         return redirect(url_for("pages.updatetournament"))
@@ -127,13 +127,63 @@ def updateTournament():
         if db.fetchWinner(winner, tournamentID) == "":
             matchIDs = db.fetchAllMatchIDs()
             if roundNumber == 0:
-                matchID = matchIDs[0]
+                matchID = db.fetchWinnersMatchID()
+                n = bracket[0].index(matchID)
+                if n == 0:
+                    db.updateTopID(tournamentID, winner, matchIDs[3])
+                    return redirect(url_for("pages.bracketview"))
+                elif n == 1:
+                    db.updateBotID(tournamentID, winner, matchIDs[3])
+                    return redirect(url_for("pages.bracketview"))
+                elif n == 2:
+                    db.updateTopID(tournamentID, winner, matchIDs[4])
+                    return redirect(url_for("pages.bracketview"))
+                elif n == 3:
+                    db.updateBotID(tournamentID, winner, matchIDs[4])
+                    return redirect(url_for("pages.bracketview"))
+                elif n == 4:
+                    db.updateTopID(tournamentID, winner, matchIDs[5])
+                    return redirect(url_for("pages.bracketview"))
+                elif n == 5:
+                    db.updateBotID(tournamentID, winner, matchIDs[5])
+                    return redirect(url_for("pages.bracketview"))
+                elif n == 6:
+                    db.updateTopID(tournamentID, winner, matchIDs[6])
+                    return redirect(url_for("pages.bracketview"))
+                elif n == 7:
+                    db.updateBotID(tournamentID, winner, matchIDs[6])
+                    return redirect(url_for("pages.bracketview"))
             elif roundNumber == 1:
-                pass
+                matchID = db.fetchWinnersMatchID()
+                n = bracket[1].index(matchID)
+                if n == 0:
+                    db.updateTopID(tournamentID, winner, matchIDs[1])
+                    return redirect(url_for("pages.bracketview"))
+                elif n == 1:
+                    db.updateBotID(tournamentID, winner, matchIDs[1])
+                    return redirect(url_for("pages.bracketview"))
+                elif n == 2:
+                    db.updateTopID(tournamentID, winner, matchIDs[2])
+                    return redirect(url_for("pages.bracketview"))
+                elif n == 3:
+                    db.updateBotID(tournamentID, winner, matchIDs[2])
+                    return redirect(url_for("pages.bracketview"))
             elif roundNumber == 2:
-                pass
+                matchID = db.fetchWinnersMatchID()
+                n = bracket[2].index(matchID)
+                if n == 0:
+                    db.updateTopID(tournamentID, winner, matchIDs[0])
+                    return redirect(url_for("pages.bracketview"))
+                elif n == 1:
+                    db.updateBotID(tournamentID, winner, matchIDs[0])
+                    return redirect(url_for("pages.bracketview"))
             elif roundNumber == 3:
-                pass
+                matchID = matchIDs[0]
+                db.updateWinner(tournamentID, winner, matchID)
+                bracket = session["bracket"]
+                bracket[4] = winner
+                flash(str(winner) + "has won the tournament!")
+                return redirect(url_for("pages.bracketview"))
         else:
             flash("Match already has a winner - Please try again.")
             return redirect(url_for("pages.updatetournament"))
