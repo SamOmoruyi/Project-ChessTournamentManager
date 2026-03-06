@@ -131,15 +131,15 @@ class DataBaseHandler:
             conn.commit()
 
     def addPlayer(self, playerName, tournamentID):
-        try:
+        #try:
             with self.connect() as conn:
                 conn.execute("INSERT INTO players (playerName, tournamentID) VALUES (?, ?)",(playerName, tournamentID))
                 conn.commit()
-            return True, None
-        except Exception as error:
-            print(error)
-            print("unkown-error")
-            return False, "unknown-error"
+            #return True, None
+        #except Exception as error:
+            #print(error)
+            #print("unkown-error")
+            #return False, "unknown-error"
 
     def createMatchesTable(self):
         with self.connect() as conn:
@@ -190,7 +190,7 @@ class DataBaseHandler:
             conn.cursor()
             results = conn.execute("SELECT tournamentSize FROM tournaments WHERE tournamentID = ?", (tournamentID,))
             tournamentSize = results.fetchone()
-            return tournamentSize
+            return tournamentSize[0]
         
     def fetchAllMatchIDs(self, tournamentID):
         with self.connect() as conn:
@@ -225,12 +225,12 @@ class DataBaseHandler:
             conn.cursor()
             results = conn.execute("SELECT winner FROM matches WHERE topID = ? OR botID = ? AND tournamentID = ?",(newWinner, tournamentID))
             winner = results.fetchone()
-            return winner
+            return winner[0]
         
     def fetchWinnersMatchID(self, winner, tournamentID):
         with self.connect() as conn:
             results = conn.execute("SELECT matchID FROM matches WHERE topID = ? OR botID = ? AND tournamentID = ? AND winner = NULL",(winner, tournamentID))
             matchID = results.fetchone()
-            return matchID
+            return matchID[0]
 db = DataBaseHandler()
 db.createTable()

@@ -56,14 +56,18 @@ def createPlayers():
     tournamentID = session["tournamentID"]
     tournamentSize = session["tournamentSize"]
     n = 1
-    while n != tournamentSize:
-        formDetails = request.form
-        playerName = formDetails.get("playerName")
+    formData = request.form.items()
+
+    print(formData)
+
+    for player in formData:
+        playerName = player[1]
         print(playerName)
+        ##send this to the DB!
         db.addPlayer(playerName, tournamentID)
-        n = n + 1
-    #bit that makes the first round of matches
+#bit that makes the first round of matches
     while n != int(tournamentSize - 1):
+        print(tournamentID)
         db.createMatches(tournamentID)
         n = n + 1
     numberOfrounds = math.log2(tournamentSize)    
@@ -104,6 +108,8 @@ def createPlayers():
         db.updateBotID(playerIDs[13], matchIDs[6])
         db.updateTopID(playerIDs[14], matchIDs[7])
         db.updateBotID(playerIDs[15], matchIDs[7])
+
+    return "Hello"
     
     return redirect(url_for("pages.bracketview", tournamentID = tournamentID, tournamentSize = tournamentSize, tournamentName = tournamentName))
 
