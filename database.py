@@ -91,13 +91,21 @@ class DataBaseHandler:
                 conn.execute("""DELETE FROM tournaments WHERE tournamentID = ? AND userID = ?""", (tournamentID, userID))
                 conn.commit()
 
-    def fetchTournament(self):
+    def fetchTournaments(self):
         with self.connect() as conn:
             conn.cursor()
-            results = conn.execute("SELECT tournamentName, tournamentDescription, tournamentDate, tournamentSize FROM tournaments")
+            results = conn.execute("SELECT tournamentID, tournamentName, tournamentMaker, tournamentDescription, tournamentSize, tournamentDate FROM tournaments")
             conn.commit()
             tournaments = results.fetchall()
             return tournaments
+        
+    def fetchTournament(self, tournamentID):
+        with self.connect() as conn:
+            conn.cursor()
+            results = conn.execute("SELECT tournamentName, tournamentMaker, tournamentDescription, tournamentSize, tournamentDate FROM tournaments WHERE tournamentID = ?", (tournamentID))
+            conn.commit()
+            tournament = results.fetchall()
+            return tournament
 
     def addTournament(self, userID, tournamentName, tournamentMaker, tournamentDate, tournamentDescription, tournamentSize):
         try:
@@ -162,7 +170,7 @@ class DataBaseHandler:
     def updateTopID(self, tournamentID, newTopID, matchID):
         with self.connect() as conn:
             conn.cursor()
-            conn.execute("UPDATE matches SET topID = ? WHERE tournamentID = ? AND WHERE matchID = ?", (newTopID, tournamentID, matchID))
+            conn.execute("UPDATE matches SET topID = ? WHERE tournamentID = ? AND matchID = ?", (newTopID, tournamentID, matchID))
             conn.commit()
 
     def updateBotID(self, tournamentID, newBotID, matchID):
@@ -200,7 +208,7 @@ class DataBaseHandler:
             return matchIDs
 
     def fetchAllPlayerIDs(self, tournamentID):
-        with self.conect() as conn:
+        with self.connect() as conn:
             conn.cursor()
             results = conn.execute("SELECT playerID FROM players WHERE tournamentID = ?", (tournamentID,))
             playerIDs = results.fetchall()
@@ -209,12 +217,12 @@ class DataBaseHandler:
     def fetchTopandBotIDs(self, matchID):
         with self.connect() as conn:
             conn.cursor()
-            results = conn.execute("SELECT topID AND SELECT botID FROM matches WHERE matchID = ?", (matchID,))
+            results = conn.execute("SELECT topID, botID FROM matches WHERE matchID = ?", (matchID,))
             topAndBotIDs = results.fetchall()
             return topAndBotIDs
         
     def fetchPlayerName(self, playerID):
-        with self.connect as conn:
+        with self.connect() as conn:
             conn.cursor()
             results = conn.execute("SELECT playerName from players WHERE playerID = ?",(playerID,))
             playerNames = results.fetchall()
@@ -232,5 +240,9 @@ class DataBaseHandler:
             results = conn.execute("SELECT matchID FROM matches WHERE topID = ? OR botID = ? AND tournamentID = ? AND winner = NULL",(winner, tournamentID))
             matchID = results.fetchone()
             return matchID[0]
+        
+    def fetchAllTournamentIDs(self):
+        with self.connect as conn:
+            results = conn.execute("SELECT tournamentID, ")
 db = DataBaseHandler()
 db.createTable()
