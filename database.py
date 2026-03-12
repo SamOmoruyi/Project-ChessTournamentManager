@@ -102,7 +102,7 @@ class DataBaseHandler:
     def fetchTournament(self, tournamentID):
         with self.connect() as conn:
             conn.cursor()
-            results = conn.execute("SELECT tournamentName, tournamentMaker, tournamentDescription, tournamentSize, tournamentDate FROM tournaments WHERE tournamentID = ?", (tournamentID))
+            results = conn.execute("SELECT tournamentName, tournamentMaker, tournamentDescription, tournamentSize, tournamentDate FROM tournaments WHERE tournamentID = ?", (tournamentID,))
             conn.commit()
             tournament = results.fetchall()
             return tournament

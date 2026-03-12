@@ -69,7 +69,7 @@ def createPlayers():
     tournamentSize = session["tournamentSize"]
     return render_template("tournamentplayerselection.html", db = db, tournamentSize = tournamentSize, tournamentID = tournamentID)
 
-@pages.route("/bracketview/<int:tournamentID>")
+@pages.route("/bracketview/<tournamentID>")
 def onView(tournamentID):
     print(tournamentID)
     tournamentID = int(tournamentID)
@@ -78,9 +78,10 @@ def onView(tournamentID):
     db = DataBaseHandler()
     tournamentDetails = db.fetchTournament(tournamentID)
     print(tournamentDetails)
-    tournamentSize = tournamentDetails[788]
+    print(tournamentDetails[0])
+    tournamentSize = tournamentDetails[0][3]
     print(tournamentID)
-    matchIDs = db.fetchAllMatchIDs(tournamentID[0])
+    matchIDs = db.fetchAllMatchIDs(tournamentID)
     print(matchIDs)
     bracket = []
     numberOfRounds = math.log2(tournamentSize)
