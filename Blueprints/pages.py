@@ -15,9 +15,6 @@ def dashboard():
     session["currentTournament"] = currentTournament
     print(currentTournament)
     db = DataBaseHandler()
-    print(currentUser)
-    print(userID)
-    print(session)
     return render_template("dashboard.html", currentUser = currentUser, db = db, userID = userID)
 
 # These 3 pages have validation to prevent you from accessing them if you are logged in
@@ -47,8 +44,6 @@ def tournamentHome():
     userID = session["userID"]
     db = DataBaseHandler()
     tournaments = db.fetchTournaments()
-    print(tournaments)
-    print(tournaments[0])
     return render_template("tournamenthome.html", currentUser = currentUser, db = db, userID = userID, tournaments = tournaments)
 
 @pages.route("/createtournament")
@@ -65,26 +60,27 @@ def createPlayers():
     if not isAuthorised():
         return redirect(url_for("pages.login"))
     db = DataBaseHandler()
-    tournamentID = session["tournamentID"]
-    tournamentSize = session["tournamentSize"]
+    tournamentID = session["currentTournament"]
+    tournamentID = int(tournamentID[0])
+    tournamentDetails = db.fetchTournament(tournamentID)
+    tournamentSize = tournamentDetails[0][3]
     return render_template("tournamentplayerselection.html", db = db, tournamentSize = tournamentSize, tournamentID = tournamentID)
 
 @pages.route("/bracketview/<tournamentID>")
 def onView(tournamentID):
-    print(tournamentID)
+    #fetching data info + ensuring it is correct no matter where you view from
     tournamentID = int(tournamentID)
     currentTournament = tournamentID
     session["currentTournament"] = currentTournament
     db = DataBaseHandler()
+    #fetching the rest of details for this tournament
     tournamentDetails = db.fetchTournament(tournamentID)
-    print(tournamentDetails)
-    print(tournamentDetails[0])
     tournamentSize = tournamentDetails[0][3]
-    print(tournamentID)
+    #fetching matchIDs
     matchIDs = db.fetchAllMatchIDs(tournamentID)
-    print(matchIDs)
+    #creating bracket
     bracket = []
-    numberOfRounds = math.log2(tournamentSize)
+    numberOfRounds = int(math.log2(tournamentSize))
     n = numberOfRounds
     while n != 0:
         if n == 1:
@@ -102,65 +98,44 @@ def onView(tournamentID):
             roundOf16 = []
             bracket.append(roundOf16)
         n = n - 1
-    n = numberOfRounds
-
-    while n != 0 :
-        if n == 1:
-            final.append(matchIDs[0][0])
-        if n == 2:
-            semiFinal.append(matchIDs[1][0])
-            semiFinal.append(matchIDs[2][0])
-        if n == 3:
-           quarterFinal.append(matchIDs[3][0])
-           quarterFinal.append(matchIDs[4][0])
-           quarterFinal.append(matchIDs[5][0])
-           quarterFinal.append(matchIDs[6][0])
-        if n == 4:
-            roundOf16.append(matchIDs[7][0])
-            roundOf16.append(matchIDs[8][0])
-            roundOf16.append(matchIDs[9][0])
-            roundOf16.append(matchIDs[10][0])
-            roundOf16.append(matchIDs[11][0])
-            roundOf16.append(matchIDs[12][0])
-            roundOf16.append(matchIDs[13][0])
-            roundOf16.append(matchIDs[14][0])
-        n = n - 1
-        
-        for i in range(0, (int(tournamentSize) - 1)):
-            print(i)
-            print(matchIDs)
-            topAndBotIDs = db.fetchTopandBotIDs(matchIDs[i][0])
-            playerNames = []
+    #placing all the matches for each round
+    for i in range(0, (int(tournamentSize) - 1)):
+        topAndBotIDs = db.fetchTopandBotIDs(matchIDs[i][0])
+        playerNames = []
+        if topAndBotIDs[0][0] != None: 
             playerNames.append(db.fetchPlayerName(topAndBotIDs[0][0]))
+        if topAndBotIDs[0][1] != None:
             playerNames.append(db.fetchPlayerName(topAndBotIDs[0][1]))
-            if i == 0:
-                matchIDs = []
-                matchIDs.append(playerNames)
-                final.append(matchIDs)
-            elif i < 3:
-                matchIDs = []
-                matchIDs.append(playerNames)
-                semiFinal.append(matchIDs)
-            elif i < 7:
-                matchIDs = []
-                matchIDs.append(playerNames)
-                quarterFinal.append(matchIDs)
-            else:
+        if i == 0:
+            final.append(playerNames)
+        elif i < 3:
+            semiFinal.append(playerNames)
+        elif i < 7:
+            quarterFinal.append(playerNames)
+        else:
                 roundOf16.append(playerNames)
-            print(i)
-            print(matchIDs)
-            print(matchIDs[i])
-    print(playerNames)
-    print(final)
-    print(matchIDs)
-    print(bracket)
     session["bracket"] = bracket
+    print(bracket)
     print(bracket[0])
+    print(bracket[0][0])
+    print(bracket[0][0][0])
+    print(bracket[0][0][0][0])
     return "hiiii"
     return render_template("tournamentbracketview.html", bracket = bracket, db = db, tournamentID = tournamentID, tournamentSize = tournamentSize)
 
 @pages.route("/updatetournament")
 def onUpdate():
+    #fetching bracket as well as extra info:
     bracket = session["bracket"]
     tournamentID = session["tournamentID"]
+    currentUser = session["currentUser"]
+    #ensuring all data from database is collected in the correct format
+    currentUser = str(currentUser)
+    db = DataBaseHandler()
+    tournamentDetails = db.fetchTournament(tournamentID)
+    tournamentOwner = tournamentDetails[0][1]
+    tournamentOwner = str(tournamentOwner)
+    #validation to prevent users who are not the owner from being able to update tournament
+    if currentUser != tournamentOwner:
+        return redirect(url_for("pages.onView", tournamentID = tournamentID))
     return render_template("tournamentupdating.html", bracket = bracket, tournamentID = tournamentID)
