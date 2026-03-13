@@ -82,6 +82,7 @@ def onView(tournamentID):
     bracket = []
     numberOfRounds = int(math.log2(tournamentSize))
     n = numberOfRounds
+    # logic for how many rounds are made
     while n != 0:
         if n == 1:
             final = []
@@ -98,7 +99,7 @@ def onView(tournamentID):
             roundOf16 = []
             bracket.append(roundOf16)
         n = n - 1
-    #placing all the matches for each round
+    #placing all the matches for each round by fetching playernames and putting them in bracket
     for i in range(0, (int(tournamentSize) - 1)):
         topAndBotIDs = db.fetchTopandBotIDs(matchIDs[i][0])
         playerNames = []
@@ -113,15 +114,9 @@ def onView(tournamentID):
         elif i < 7:
             quarterFinal.append(playerNames)
         else:
-                roundOf16.append(playerNames)
+            roundOf16.append(playerNames)
     session["bracket"] = bracket
-    print(bracket)
-    print(bracket[0])
-    print(bracket[0][0])
-    print(bracket[0][0][0])
-    print(bracket[0][0][0][0])
-    return "hiiii"
-    return render_template("tournamentbracketview.html", bracket = bracket, db = db, tournamentID = tournamentID, tournamentSize = tournamentSize)
+    return render_template("tournamentbracketview.html", bracket = bracket, tournamentID = tournamentID, tournamentSize = tournamentSize)
 
 @pages.route("/updatetournament")
 def onUpdate():

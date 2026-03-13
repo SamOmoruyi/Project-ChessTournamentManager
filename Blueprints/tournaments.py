@@ -117,26 +117,28 @@ def createPlayers():
 
 @tournaments.route("/updatetournament", methods = ["POST"])
 def updateTournament():
+    #fetch details
     formDetails = request.form
     winner = formDetails.get("winner")
     roundNumber = formDetails.get("roundnumber")
     int(roundNumber) == int(roundNumber) - 1
+    #check round number given is valid
     if int(roundNumber) < 0:
         flash("Round number is invalid - Please try again.")
         return redirect(url_for("pages.onUpdate"))
-    
     elif int(roundNumber) > 3:
         flash("Round number is invalid - Please try again.")
         return redirect(url_for("pages.onUpdate"))
-    
     else:
         db = DataBaseHandler()
         tournamentID = session["currentTournament"]
-        if db.fetchWinner(winner, tournamentID) == "":
+        if db.fetchWinner(winner, tournamentID) == None:
             matchIDs = db.fetchAllMatchIDs()
+            #fetches where the player is relative to the tournament bracket
             if roundNumber == 0:
-                matchID = db.fetchWinnersMatchID()
+                matchID = db.fetchWinnersMatchID(winner, tournamentID)
                 n = bracket[0].index(matchID)
+                #validation for where the winner will go based on what round they came from and where they are in bracket
                 if n == 0:
                     db.updateTopID(tournamentID, winner, matchIDs[3][0])
                     return redirect(url_for("pages.onView", tournamentID = tournamentID))
@@ -185,6 +187,7 @@ def updateTournament():
                 elif n == 1:
                     db.updateBotID(tournamentID, winner, matchIDs[0][0])
                     return redirect(url_for("pages.onView", tournamentID = tournamentID))
+            #crowns winner of tournament
             elif roundNumber == 3:
                 matchID = matchIDs[0][0]
                 db.updateWinner(tournamentID, winner, matchID)
@@ -192,6 +195,7 @@ def updateTournament():
                 bracket[4] = winner
                 flash(str(winner) + "has won the tournament!")
                 return redirect(url_for("pages.onView", tournamentID = tournamentID))
+        #check to make sure the match does not have a winner
         else:
             flash("Match already has a winner - Please try again.")
             return redirect(url_for("pages.onUpdate"))
