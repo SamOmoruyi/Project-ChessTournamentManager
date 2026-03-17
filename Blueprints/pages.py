@@ -66,7 +66,7 @@ def createPlayers():
     tournamentSize = tournamentDetails[0][3]
     return render_template("tournamentplayerselection.html", db = db, tournamentSize = tournamentSize, tournamentID = tournamentID)
 
-@pages.route("/bracketview/<tournamentID>")
+@pages.route("/tournaments/<tournamentID>")
 def onView(tournamentID):
     #fetching data info + ensuring it is correct no matter where you view from
     tournamentID = int(tournamentID)
@@ -102,11 +102,9 @@ def onView(tournamentID):
     #placing all the matches for each round by fetching playernames and putting them in bracket
     for i in range(0, (int(tournamentSize) - 1)):
         topAndBotIDs = db.fetchTopandBotIDs(matchIDs[i][0])
-        playerNames = []
-        if topAndBotIDs[0][0] != None: 
-            playerNames.append(db.fetchPlayerName(topAndBotIDs[0][0]))
-        if topAndBotIDs[0][1] != None:
-            playerNames.append(db.fetchPlayerName(topAndBotIDs[0][1]))
+        playerNames = [] 
+        playerNames.append(db.fetchPlayerName(topAndBotIDs[0][0]))
+        playerNames.append(db.fetchPlayerName(topAndBotIDs[0][1]))
         if i == 0:
             final.append(playerNames)
         elif i < 3:
@@ -116,10 +114,14 @@ def onView(tournamentID):
         else:
             roundOf16.append(playerNames)
     session["bracket"] = bracket
+    print(bracket)
+    print(matchIDs)
+
     return render_template("tournamentbracketview.html", bracket = bracket, tournamentID = tournamentID, tournamentSize = tournamentSize)
 
-@pages.route("/updatetournament")
-def onUpdate():
+@pages.route("/tournaments/<tournamentID>/<matchID>")
+def onUpdate(tournamentID, matchID):
+    return tournamentID + matchID
     #fetching bracket as well as extra info:
     bracket = session["bracket"]
     tournamentID = session["tournamentID"]

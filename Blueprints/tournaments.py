@@ -56,8 +56,8 @@ def createPlayers():
     tournamentID = tournamentID[0]
     db = DataBaseHandler()
     tournamentDetails = db.fetchTournament(tournamentID)
-    tournamentName = tournamentDetails[0][0]
     tournamentSize = tournamentDetails[0][3]
+    tournamentName = tournamentDetails[0][0]
     n = 1
     #requesting form
     formData = request.form.items()
@@ -115,87 +115,98 @@ def createPlayers():
 
     return redirect(url_for("pages.onView", tournamentID = tournamentID, tournamentSize = tournamentSize, tournamentName = tournamentName))
 
-@tournaments.route("/updatetournament", methods = ["POST"])
-def updateTournament():
-    #fetch details
-    formDetails = request.form
-    winner = formDetails.get("winner")
-    roundNumber = formDetails.get("roundnumber")
-    int(roundNumber) == int(roundNumber) - 1
-    #check round number given is valid
-    if int(roundNumber) < 0:
-        flash("Round number is invalid - Please try again.")
-        return redirect(url_for("pages.onUpdate"))
-    elif int(roundNumber) > 3:
-        flash("Round number is invalid - Please try again.")
-        return redirect(url_for("pages.onUpdate"))
-    else:
-        db = DataBaseHandler()
-        tournamentID = session["currentTournament"]
-        if db.fetchWinner(winner, tournamentID) == None:
-            matchIDs = db.fetchAllMatchIDs()
-            #fetches where the player is relative to the tournament bracket
-            if roundNumber == 0:
-                matchID = db.fetchWinnersMatchID(winner, tournamentID)
-                n = bracket[0].index(matchID)
-                #validation for where the winner will go based on what round they came from and where they are in bracket
-                if n == 0:
-                    db.updateTopID(tournamentID, winner, matchIDs[3][0])
-                    return redirect(url_for("pages.onView", tournamentID = tournamentID))
-                elif n == 1:
-                    db.updateBotID(tournamentID, winner, matchIDs[3][0])
-                    return redirect(url_for("pages.onView", tournamentID = tournamentID))
-                elif n == 2:
-                    db.updateTopID(tournamentID, winner, matchIDs[4][0])
-                    return redirect(url_for("pages.onView", tournamentID = tournamentID))
-                elif n == 3:
-                    db.updateBotID(tournamentID, winner, matchIDs[4][0])
-                    return redirect(url_for("pages.onView", tournamentID = tournamentID))
-                elif n == 4:
-                    db.updateTopID(tournamentID, winner, matchIDs[5][0])
-                    return redirect(url_for("pages.onView", tournamentID = tournamentID))
-                elif n == 5:
-                    db.updateBotID(tournamentID, winner, matchIDs[5][0])
-                    return redirect(url_for("pages.onView", tournamentID = tournamentID))
-                elif n == 6:
-                    db.updateTopID(tournamentID, winner, matchIDs[6][0])
-                    return redirect(url_for("pages.onView", tournamentID = tournamentID))
-                elif n == 7:
-                    db.updateBotID(tournamentID, winner, matchIDs[6][0])
-                    return redirect(url_for("pages.onView", tournamentID = tournamentID))
-            elif roundNumber == 1:
-                matchID = db.fetchWinnersMatchID()
-                n = bracket[1].index(matchID)
-                if n == 0:
-                    db.updateTopID(tournamentID, winner, matchIDs[1][0])
-                    return redirect(url_for("pages.onView", tournamentID = tournamentID))
-                elif n == 1:
-                    db.updateBotID(tournamentID, winner, matchIDs[1][0])
-                    return redirect(url_for("pages.onView", tournamentID = tournamentID))
-                elif n == 2:
-                    db.updateTopID(tournamentID, winner, matchIDs[2][0])
-                    return redirect(url_for("pages.onView", tournamentID = tournamentID))
-                elif n == 3:
-                    db.updateBotID(tournamentID, winner, matchIDs[2][0])
-                    return redirect(url_for("pages.onView", tournamentID = tournamentID))
-            elif roundNumber == 2:
-                matchID = db.fetchWinnersMatchID()
-                n = bracket[2].index(matchID)
-                if n == 0:
-                    db.updateTopID(tournamentID, winner, matchIDs[0][0])
-                    return redirect(url_for("pages.onView", tournamentID = tournamentID))
-                elif n == 1:
-                    db.updateBotID(tournamentID, winner, matchIDs[0][0])
-                    return redirect(url_for("pages.onView", tournamentID = tournamentID))
-            #crowns winner of tournament
-            elif roundNumber == 3:
-                matchID = matchIDs[0][0]
-                db.updateWinner(tournamentID, winner, matchID)
-                bracket = session["bracket"]
-                bracket[4] = winner
-                flash(str(winner) + "has won the tournament!")
-                return redirect(url_for("pages.onView", tournamentID = tournamentID))
-        #check to make sure the match does not have a winner
-        else:
-            flash("Match already has a winner - Please try again.")
-            return redirect(url_for("pages.onUpdate"))
+# @tournaments.route("/updatetournament", methods = ["POST"])
+# def updateTournament():
+#     #fetch details
+#     db = DataBaseHandler()
+#     tournamentDetails = db.fetchTournament(tournamentID)
+#     tournamentSize = tournamentDetails[0][3]
+#     formDetails = request.form
+#     winner = formDetails.get("winner")
+#     roundNumber = formDetails.get("roundnumber")
+#     int(roundNumber) == int(roundNumber) - 1
+#     #check round number given is valid
+#     if int(roundNumber) < 0:
+#         flash("Round number is invalid - Please try again.")
+#         return redirect(url_for("pages.onUpdate"))
+#     elif int(roundNumber) > 3:
+#         flash("Round number is invalid - Please try again.")
+#         return redirect(url_for("pages.onUpdate"))
+#     else:
+#         # ensuring roundnumber starts in the right place
+#         if tournamentSize == 8 :
+#             roundNumber = roundNumber + 1
+#         elif tournamentSize == 4:
+#             roundNumber == roundNumber + 2
+#         elif tournamentSize == 2:
+#             roundNumber == roundNumber + 2
+#         else:
+#             roundNumber == roundNumber
+#         tournamentID = session["currentTournament"]
+#         if db.fetchWinner(winner, tournamentID) == None:
+#             matchIDs = db.fetchAllMatchIDs()
+#             #fetches where the player is relative to the tournament bracket
+#             if roundNumber == 0:
+#                 matchID = db.fetchWinnersMatchID(winner, tournamentID)
+#                 n = bracket[0].index(matchID)
+#                 #validation for where the winner will go based on what round they came from and where they are in bracket
+#                 if n == 0:
+#                     db.updateTopID(tournamentID, winner, matchIDs[3][0])
+#                     return redirect(url_for("pages.onView", tournamentID = tournamentID))
+#                 elif n == 1:
+#                     db.updateBotID(tournamentID, winner, matchIDs[3][0])
+#                     return redirect(url_for("pages.onView", tournamentID = tournamentID))
+#                 elif n == 2:
+#                     db.updateTopID(tournamentID, winner, matchIDs[4][0])
+#                     return redirect(url_for("pages.onView", tournamentID = tournamentID))
+#                 elif n == 3:
+#                     db.updateBotID(tournamentID, winner, matchIDs[4][0])
+#                     return redirect(url_for("pages.onView", tournamentID = tournamentID))
+#                 elif n == 4:
+#                     db.updateTopID(tournamentID, winner, matchIDs[5][0])
+#                     return redirect(url_for("pages.onView", tournamentID = tournamentID))
+#                 elif n == 5:
+#                     db.updateBotID(tournamentID, winner, matchIDs[5][0])
+#                     return redirect(url_for("pages.onView", tournamentID = tournamentID))
+#                 elif n == 6:
+#                     db.updateTopID(tournamentID, winner, matchIDs[6][0])
+#                     return redirect(url_for("pages.onView", tournamentID = tournamentID))
+#                 elif n == 7:
+#                     db.updateBotID(tournamentID, winner, matchIDs[6][0])
+#                     return redirect(url_for("pages.onView", tournamentID = tournamentID))
+#             elif roundNumber == 1:
+#                 matchID = db.fetchWinnersMatchID()
+#                 n = bracket[1].index(matchID)
+#                 if n == 0:
+#                     db.updateTopID(tournamentID, winner, matchIDs[1][0])
+#                     return redirect(url_for("pages.onView", tournamentID = tournamentID))
+#                 elif n == 1:
+#                     db.updateBotID(tournamentID, winner, matchIDs[1][0])
+#                     return redirect(url_for("pages.onView", tournamentID = tournamentID))
+#                 elif n == 2:
+#                     db.updateTopID(tournamentID, winner, matchIDs[2][0])
+#                     return redirect(url_for("pages.onView", tournamentID = tournamentID))
+#                 elif n == 3:
+#                     db.updateBotID(tournamentID, winner, matchIDs[2][0])
+#                     return redirect(url_for("pages.onView", tournamentID = tournamentID))
+#             elif roundNumber == 2:
+#                 matchID = db.fetchWinnersMatchID()
+#                 n = bracket[2].index(matchID)
+#                 if n == 0:
+#                     db.updateTopID(tournamentID, winner, matchIDs[0][0])
+#                     return redirect(url_for("pages.onView", tournamentID = tournamentID))
+#                 elif n == 1:
+#                     db.updateBotID(tournamentID, winner, matchIDs[0][0])
+#                     return redirect(url_for("pages.onView", tournamentID = tournamentID))
+#             #crowns winner of tournament
+#             elif roundNumber == 3:
+#                 matchID = matchIDs[0][0]
+#                 db.updateWinner(tournamentID, winner, matchID)
+#                 bracket = session["bracket"]
+#                 bracket[4] = winner
+#                 flash(str(winner) + "has won the tournament!")
+#                 return redirect(url_for("pages.onView", tournamentID = tournamentID))
+#         #check to make sure the match does not have a winner
+#         else:
+#             flash("Match already has a winner - Please try again.")
+#             return redirect(url_for("pages.onUpdate"))
