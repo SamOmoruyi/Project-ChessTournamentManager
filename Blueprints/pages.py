@@ -11,9 +11,10 @@ def dashboard():
         return redirect(url_for("pages.guestdashboard"))
     currentUser = session["currentUser"]
     userID = session["userID"]
-    currentTournament = ""
+    currentTournament = None
+    currentTournamentsMatchIDs = None
     session["currentTournament"] = currentTournament
-    print(currentTournament)
+    session["currentTournamentsMatchIDs"] = currentTournamentsMatchIDs
     db = DataBaseHandler()
     return render_template("dashboard.html", currentUser = currentUser, db = db, userID = userID)
 
@@ -114,21 +115,22 @@ def onView(tournamentID):
         else:
             roundOf16.append(playerNames)
     session["bracket"] = bracket
+    session["currentTournamentsMatchIDs"] = matchIDs
     print(bracket)
-    print(matchIDs)
+    print(session["currentTournamentsMatchIDs"])
 
-    return render_template("tournamentbracketview.html", bracket = bracket, tournamentID = tournamentID, tournamentSize = tournamentSize)
+    return render_template("tournamentbracketview.html", bracket = bracket, tournamentID = tournamentID, tournamentSize = tournamentSize, matchIDs = matchIDs)
 
 @pages.route("/tournaments/<tournamentID>/<matchID>")
 def onUpdate(tournamentID, matchID):
-    return tournamentID + matchID
     #fetching bracket as well as extra info:
     bracket = session["bracket"]
-    tournamentID = session["tournamentID"]
     currentUser = session["currentUser"]
+    session["currentMatch"] = matchID
     #ensuring all data from database is collected in the correct format
     currentUser = str(currentUser)
     db = DataBaseHandler()
+    matchIDs = db.fetchAllMatchIDs(tournamentID)
     tournamentDetails = db.fetchTournament(tournamentID)
     tournamentOwner = tournamentDetails[0][1]
     tournamentOwner = str(tournamentOwner)

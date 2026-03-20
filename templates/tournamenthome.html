@@ -25,10 +25,7 @@
                 {% for tournament in tournaments %}
                     <tr>
                         <td>
-                            <a href = {{ "/tournaments/" + tournament[0]|string }}  >View Tournament</a>
-                            <!-- <form action = {{ "/bracketview" + "/" + tournament[0]|string }} method = "get">
-                                <input name = "tournamentName" value = "{{tournament[1]}}" type = "submit" >
-                            </form> -->
+                            <a href = {{ "/tournaments/" + tournament[0]|string }}> {{tournament[1]}} </a>
                         </td>
                         <td>{{tournament[2]}}</td>
                         <td>{{tournament[3]}}</td>

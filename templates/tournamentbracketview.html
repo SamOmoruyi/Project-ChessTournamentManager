@@ -9,7 +9,7 @@
         <div>
             <h4> Final </h4>
             <div>
-            <a href="/tournaments/" + {{tournamentID|string}} + matchIDs >
+            <a href={{"/tournaments/" + tournamentID|string + "/" + matchIDs[0][0]|string }} >
             {{bracket[0][0][0][0]}}
             {{bracket[0][0][1][0]}}
             </a>
@@ -200,6 +200,6 @@
             </div>
         </div>
         {% endif %}
-        <a href="/1">Place a result</a>
+   
         <a href="/">Go home!</a>
     {% endblock %}
