@@ -115,6 +115,13 @@ def createPlayers():
 
     return redirect(url_for("pages.onView", tournamentID = tournamentID, tournamentSize = tournamentSize, tournamentName = tournamentName))
 
+
+@tournaments.route("/updatematch", methods = ["POST"])
+def updateMatch():
+    formDetails = request.form
+    print(formDetails)
+    return formDetails
+
 @tournaments.route("/updatetournament", methods = ["POST"])
 def updateTournament():
     #fetch details
@@ -134,6 +141,7 @@ def updateTournament():
     playerNames.append(db.fetchPlayerName(topAndBotIDs[0][0]))
     playerNames.append(db.fetchPlayerName(topAndBotIDs[0][1]))
     print(playerNames)
+    print(winner)
     if winner not in playerNames:
         flash("Winner selected is not in this match - Please try again")
         return redirect(url_for("pages.onUpdate", tournamentID = tournamentID, matchID = currentMatch))

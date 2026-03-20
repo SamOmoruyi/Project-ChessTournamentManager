@@ -9,7 +9,24 @@
         <div>
             <h4> Final </h4>
             <div>
-            <a href={{"/tournaments/" + tournamentID|string + "/" + matchIDs[0][0]|string }} >
+
+                {% for round in bracket %}
+                    {% for match in round %}
+                        {% for player in match %}
+                            <form method = "post" action = "/tournaments/updatematch">
+                                <input type = "hidden" value = {{ matchIDs[0][0] }} name = "matchId">
+                                <input type = "hidden" value = {{ tournamentID }} name = "tournamentID">
+                                <input type = "hidden" value = {{bracket[0][0][0][0]}}  name = "winningPlayer">            
+            
+            
+                                <input type = "submit" value = {{bracket[0][0][0][0]}}>
+                            </form>
+                         {% endfor %}
+                    {% endfor %}
+                {% endfor %}
+
+
+            <!-- <a href={{"/tournaments/" + tournamentID|string + "/" + matchIDs[0][0]|string }} > -->
             {{bracket[0][0][0][0]}}
             {{bracket[0][0][1][0]}}
             </a>

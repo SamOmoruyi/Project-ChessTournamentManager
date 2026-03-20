@@ -71,14 +71,21 @@ def createPlayers():
 def onView(tournamentID):
     #fetching data info + ensuring it is correct no matter where you view from
     tournamentID = int(tournamentID)
+
+
     currentTournament = tournamentID
     session["currentTournament"] = currentTournament
     db = DataBaseHandler()
+    matchDetails =db.fetchMatchDetails(tournamentID)
+    print("match details" , matchDetails)
+
     #fetching the rest of details for this tournament
     tournamentDetails = db.fetchTournament(tournamentID)
+    print(tournamentDetails)
     tournamentSize = tournamentDetails[0][3]
     #fetching matchIDs
     matchIDs = db.fetchAllMatchIDs(tournamentID)
+    print("match" , matchIDs)
     #creating bracket
     bracket = []
     numberOfRounds = int(math.log2(tournamentSize))

@@ -194,6 +194,32 @@ class DataBaseHandler:
             tournamentSize = results.fetchone()
             return tournamentSize[0]
         
+
+# select *
+#   from (select a,b from table1
+#         union 
+#         select a,b from table2
+#        )
+#  where a > 1;
+
+
+    def fetchMatchDetails(self, tournamentID):
+        with self.connect() as conn:
+            conn.cursor()
+            results = conn.execute("""SELECT matches.matchID, players.playerName 
+                                   FROM matches 
+                                   JOIN players ON players.playerID = matches.topID  
+                                   WHERE matches.tournamentID = ? 
+                                   UNION
+                                   SELECT matches.matchID, players.playerName 
+                                   FROM matches 
+                                   JOIN players ON players.playerID = matches.topID  
+                                   WHERE matches.tournamentID = ?
+                                   """, (tournamentID,tournamentID))
+            matchDetails = results.fetchone()
+            return matchDetails
+ 
+
     def fetchAllMatchIDs(self, tournamentID):
         with self.connect() as conn:
             conn.cursor()
