@@ -14,7 +14,7 @@ class DataBaseHandler:
             self.createUsersTable()
             self.createTournamentsTable()
             self.createPlayersTable()
-            self.createMatchesTable()
+            self.createMatchesTables()
             conn.commit()
     #making function which places user into table
     def createUser(self, userName, email, password):
@@ -61,13 +61,15 @@ class DataBaseHandler:
             return False, None
 
     def createTournamentsTable(self):
+
         with self.connect() as conn:
             conn.cursor()
+
+            conn.execute("drop table tournaments;")
             conn.execute("""CREATE TABLE IF NOT EXISTS tournaments (
                          tournamentID INTEGER PRIMARY KEY AUTOINCREMENT,
                          userID INTEGER NOT NULL,
                          tournamentName TEXT UNIQUE NOT NULL,
-                         tournamentMaker TEXT NOT NULL,
                          tournamentDescription TEXT NOT NULL,
                          tournamentDate DATE NOT NULL,
                          tournamentSize INTEGER NOT NULL,
@@ -143,15 +145,25 @@ class DataBaseHandler:
                 conn.execute("INSERT INTO players (playerName, tournamentID) VALUES (?, ?)",(playerName, tournamentID))
                 conn.commit()
 
-    def createMatchesTable(self):
+    
+
+    def createMatchesTables(self):
         with self.connect() as conn:
             conn.cursor()
+
+       
+            conn.execute("""CREATE TABLE IF NOT EXISTS matchEntry (
+                            matchEntryID INTEGER PRIMARY KEY AUTOINCREMENT,
+                            matchID INTEGER,
+                            playerID INTEGER,
+                            FOREIGN KEY (matchID) REFERENCES matches(matchID) ON DELETE CASCADE,
+                            FOREIGN KEY (playerID) REFERENCES players(playerID)                         
+                         )""")
+
             conn.execute("""CREATE TABLE IF NOT EXISTS matches (
                          matchID INTEGER PRIMARY KEY AUTOINCREMENT,
-                         topID INTEGER DEFAULT NULL,
-                         botID INTEGER DEFAULT NULL,
                          tournamentID INTEGER NOT NULL,
-                         winner TEXT DEFAULT NULL,
+                         winnerID INTEGER DEFAULT NULL,
                          FOREIGN KEY (tournamentID) REFERENCES tournaments(tournamentID) ON DELETE CASCADE)""")
             conn.commit()
 

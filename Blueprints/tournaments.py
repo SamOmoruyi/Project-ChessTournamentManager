@@ -33,9 +33,9 @@ def createTournament():
     #opening database
     db = DataBaseHandler()
     #storing fetching session information
-    username = session["currentUser"]
+    # username = session["currentUser"]
     userID = session["userID"]
-    success, errorType, = db.addTournament(userID, tournamentName, username, tournamentDate, tournamentDescription, tournamentSize)
+    success, errorType, = db.addTournament(userID, tournamentName, tournamentDate, tournamentDescription, tournamentSize)
     session["currentTournament"] = db.fetchTournamentID(tournamentName)
     #sending user to next page
     if success:
