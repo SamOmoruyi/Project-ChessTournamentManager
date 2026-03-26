@@ -13,6 +13,7 @@ def createTournament():
     tournamentDate = formDeatils.get("tournamentDate")
     tournamentSize = formDeatils.get("tournamentSize")
     tournamentSize = int(tournamentSize)
+    tournamentOwner = session["currentUser"]
     errors = False
     #checking if details are valid 
     possibleSizes = [2,4,8,16]
@@ -33,12 +34,14 @@ def createTournament():
     #opening database
     db = DataBaseHandler()
     #storing fetching session information
-    # username = session["currentUser"]
     userID = session["userID"]
     success, errorType, = db.addTournament(userID, tournamentName, tournamentDate, tournamentDescription, tournamentSize)
-    session["currentTournament"] = db.fetchTournamentID(tournamentName)
+    # print(errorType)
+    # session["currentTournament"] = db.fetchTournamentID(tournamentName)
     #sending user to next page
     if success:
+        session["currentTournament"] = errorType
+        print(session.get("currentTournament"))
         return redirect(url_for("pages.createPlayers"))
     #sending correct error message if errors occur
     if errorType == "integrity-error":
@@ -53,73 +56,99 @@ def createTournament():
 def createPlayers():
     #fetching session information
     tournamentID = session["currentTournament"]
-    tournamentID = tournamentID[0]
     db = DataBaseHandler()
     tournamentDetails = db.fetchTournament(tournamentID)
-    tournamentSize = tournamentDetails[0][3]
+    tournamentSize = tournamentDetails[0][2]
     tournamentName = tournamentDetails[0][0]
-    n = 1
     #requesting form
     formData = request.form.items()
+    tournamentID = session.get("currentTournament")
+    playerIDs = []
+    numberOfrounds = int(math.log2(tournamentSize))
     #for loop that makes all the players requested one by one
     for player in formData:
         playerName = player[1]
         #send this to the DB!
-        db.addPlayer(playerName, tournamentID)
-    
-    #bit that makes the first round of matches
-    while n != int(tournamentSize):
-        db.createMatches(tournamentID)
+        playerIDs.append(db.addPlayer(playerName, tournamentID))
+    #for loop that makes the matchentries for round 1
+    for i in range(0,len(playerIDs), 2):
+        #make a match for each pairing - and return back the ID
+        matchID = db.createMatches(tournamentID)
+        #then make a matchEntry for each player that will also incude the match ID and tournamentID
+        db.createMatchEntry(matchID, playerIDs[i])
+        db.createMatchEntry(matchID, playerIDs[i+1])
+    n = int(0)
+    #addition of extra matches fro all tournaments that have a size larger than 2
+    for i in range(0, numberOfrounds):
+        n = n + 2**i
+    print(n)
+    extraMatches = int(n)
+    n == 0
+    while n != extraMatches + 1:
+        matchID = db.createMatches(tournamentID)
         n = n + 1
-    #find out how many rounds there will be
-    numberOfrounds = math.log2(tournamentSize)    
-    n = numberOfrounds
-    #fetch all required match and player IDs to create first round of matches
-    matchIDs = db.fetchAllMatchIDs(tournamentID)
-    playerIDs = db.fetchAllPlayerIDs(tournamentID)
-    #determining where each user will start based on their ID and ammount of rounds 
-    if n == 1:
-        db.updateTopID(tournamentID, playerIDs[0][0], matchIDs[0][0])
-        db.updateBotID(tournamentID, playerIDs[1][0], matchIDs[0][0])
-    if n == 2:
-        db.updateTopID(tournamentID, playerIDs[0][0], matchIDs[1][0])
-        db.updateBotID(tournamentID, playerIDs[1][0], matchIDs[1][0])
-        db.updateTopID(tournamentID, playerIDs[2][0], matchIDs[2][0])
-        db.updateBotID(tournamentID, playerIDs[3][0], matchIDs[2][0])
-    if n == 3:
-        db.updateTopID(tournamentID, playerIDs[0][0], matchIDs[3][0])
-        db.updateBotID(tournamentID, playerIDs[1][0], matchIDs[3][0])
-        db.updateTopID(tournamentID, playerIDs[2][0], matchIDs[4][0])
-        db.updateBotID(tournamentID, playerIDs[3][0], matchIDs[4][0])
-        db.updateTopID(tournamentID, playerIDs[4][0], matchIDs[5][0])
-        db.updateBotID(tournamentID, playerIDs[5][0], matchIDs[5][0])
-        db.updateTopID(tournamentID, playerIDs[6][0], matchIDs[6][0])
-        db.updateBotID(tournamentID, playerIDs[7][0], matchIDs[6][0])
-    if n == 4:
-        db.updateTopID(tournamentID, playerIDs[0][0], matchIDs[7][0])
-        db.updateBotID(tournamentID, playerIDs[1][0], matchIDs[7][0])
-        db.updateTopID(tournamentID, playerIDs[2][0], matchIDs[8][0])
-        db.updateBotID(tournamentID, playerIDs[3][0], matchIDs[8][0])
-        db.updateTopID(tournamentID, playerIDs[4][0], matchIDs[9][0])
-        db.updateBotID(tournamentID, playerIDs[5][0], matchIDs[9][0])
-        db.updateTopID(tournamentID, playerIDs[6][0], matchIDs[10][0])
-        db.updateBotID(tournamentID, playerIDs[7][0], matchIDs[10][0])
-        db.updateTopID(tournamentID, playerIDs[8][0], matchIDs[11][0])
-        db.updateBotID(tournamentID, playerIDs[9][0], matchIDs[12][0])
-        db.updateTopID(tournamentID, playerIDs[10][0], matchIDs[13][0])
-        db.updateBotID(tournamentID, playerIDs[11][0], matchIDs[13][0])
-        db.updateTopID(tournamentID, playerIDs[12][0], matchIDs[14][0])
-        db.updateBotID(tournamentID, playerIDs[13][0], matchIDs[14][0])
-        db.updateTopID(tournamentID, playerIDs[14][0], matchIDs[15][0])
-        db.updateBotID(tournamentID, playerIDs[15][0], matchIDs[15][0])
+    # #bit that makes the matches
+    # while n != int(tournamentSize):
+    #     db.createMatches(tournamentID)
+    #     n = n + 1
+    # #fetch all required match and player IDs to create first round of matches
+    # matchIDs = db.fetchAllMatchIDs(tournamentID)
+    # playerIDs = db.fetchAllPlayerIDs(tournamentID)
+    # #find out how many rounds there will be
+    # numberOfrounds = math.log2(tournamentSize)    
+    # n = numberOfrounds
+    # #determining where each user will start based on their ID and ammount of rounds 
+    # if n == 1:
+    #     db.createMatchEntry(matchIDs[0][0], playerIDs[0][0])
+    #     db.createMatchEntry(matchIDs[0][0], playerIDs[1][0])
+    # if n == 2:
+    #     db.createMatchEntry(matchIDs[1][0], playerIDs[0][0])
+    #     db.createMatchEntry(matchIDs[1][0], playerIDs[1][0])
+    #     db.createMatchEntry(matchIDs[2][0], playerIDs[2][0])
+    #     db.createMatchEntry(matchIDs[2][0], playerIDs[3][0])
 
+    # if n == 3:
+    #     db.createMatchEntry(matchIDs[3][0], playerIDs[0][0])
+    #     db.createMatchEntry(matchIDs[3][0], playerIDs[1][0])
+    #     db.createMatchEntry(matchIDs[4][0], playerIDs[2][0])
+    #     db.createMatchEntry(matchIDs[4][0], playerIDs[3][0])
+    #     db.createMatchEntry(matchIDs[5][0], playerIDs[4][0])
+    #     db.createMatchEntry(matchIDs[5][0], playerIDs[5][0])
+    #     db.createMatchEntry(matchIDs[6][0], playerIDs[6][0])
+    #     db.createMatchEntry(matchIDs[6][0], playerIDs[7][0])
+    # if n == 4:
+    #     db.createMatchEntry(matchIDs[7][0], playerIDs[0][0])
+    #     db.createMatchEntry(matchIDs[7][0], playerIDs[1][0])
+    #     db.createMatchEntry(matchIDs[8][0], playerIDs[2][0])
+    #     db.createMatchEntry(matchIDs[8][0], playerIDs[3][0])
+    #     db.createMatchEntry(matchIDs[9][0], playerIDs[4][0])
+    #     db.createMatchEntry(matchIDs[9][0], playerIDs[5][0])
+    #     db.createMatchEntry(matchIDs[10][0], playerIDs[6][0])
+    #     db.createMatchEntry(matchIDs[10][0], playerIDs[7][0])
+    #     db.createMatchEntry(matchIDs[11][0], playerIDs[8][0])
+    #     db.createMatchEntry(matchIDs[11][0], playerIDs[9][0])
+    #     db.createMatchEntry(matchIDs[12][0], playerIDs[10][0])
+    #     db.createMatchEntry(matchIDs[12][0], playerIDs[11][0])
+    #     db.createMatchEntry(matchIDs[13][0], playerIDs[12][0])
+    #     db.createMatchEntry(matchIDs[13][0], playerIDs[13][0])
+    #     db.createMatchEntry(matchIDs[14][0], playerIDs[14][0])
+    #     db.createMatchEntry(matchIDs[14][0], playerIDs[15][0])
+    
+        
     return redirect(url_for("pages.onView", tournamentID = tournamentID, tournamentSize = tournamentSize, tournamentName = tournamentName))
+    return "done!"
 
 
 @tournaments.route("/updatematch", methods = ["POST"])
 def updateMatch():
+    #opening database
+    db = DataBaseHandler()
+    #fetching form details
     formDetails = request.form
+    tournamentID = formDetails.get("tournamentID")
+    winner = formDetails.get("winner")
     print(formDetails)
+    
     return formDetails
 
 @tournaments.route("/updatetournament", methods = ["POST"])
@@ -128,7 +157,7 @@ def updateTournament():
     db = DataBaseHandler()
     tournamentID = session["currentTournament"]
     tournamentDetails = db.fetchTournament(tournamentID)
-    tournamentSize = tournamentDetails[0][3]
+    tournamentSize = tournamentDetails[0][2]
     formDetails = request.form
     winner = formDetails.get("winner")
     currentMatch = session["currentMatch"]

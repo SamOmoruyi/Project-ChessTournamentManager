@@ -1,7 +1,7 @@
 {%extends "base.html" %}
 
 {% block title %}
-    TempTitle : TournamentsHome
+    TempTitle : TournamentHome
 {% endblock %}
 
 {% block content %}
@@ -15,7 +15,6 @@
             <thead>
                 <tr>
                     <th>Tournament Name</th>
-                    <th>Tournament Owner</th>
                     <th>Description</th>
                     <th>Size</th>
                     <th>Date</th>
@@ -30,7 +29,6 @@
                         <td>{{tournament[2]}}</td>
                         <td>{{tournament[3]}}</td>
                         <td>{{tournament[4]}}</td>
-                        <td>{{tournament[5]}}</td>
                     </tr>
                 {% endfor %}
             </tbody>

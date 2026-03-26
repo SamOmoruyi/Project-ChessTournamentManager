@@ -5,7 +5,6 @@
 {% endblock %}
 
     {% block content %}
-        {% if tournamentSize == 2 %}
         <div>
             <h4> Final </h4>
             <div>
@@ -14,209 +13,20 @@
                     {% for match in round %}
                         {% for player in match %}
                             <form method = "post" action = "/tournaments/updatematch">
-                                <input type = "hidden" value = {{ matchIDs[0][0] }} name = "matchId">
+                                <input type = "hidden" value = {{ matchID}} name = "matchID">
                                 <input type = "hidden" value = {{ tournamentID }} name = "tournamentID">
-                                <input type = "hidden" value = {{bracket[0][0][0][0]}}  name = "winningPlayer">            
-            
-            
-                                <input type = "submit" value = {{bracket[0][0][0][0]}}>
+                                <input type = "hidden" value = {{player[0]}}  name = "winner">            
+                                <input type = "submit" value = {{player[0]}}>
                             </form>
                          {% endfor %}
                     {% endfor %}
                 {% endfor %}
 
-
+            <h5> Tournament Winner </h5>            
+            <div>                
+                {{bracket[numberOfRounds + 1]}}            
+            </div>
             <!-- <a href={{"/tournaments/" + tournamentID|string + "/" + matchIDs[0][0]|string }} > -->
-            {{bracket[0][0][0][0]}}
-            {{bracket[0][0][1][0]}}
-            </a>
-            </div>
-        </div>
-
-        <div>
-            <h5> Winner </h5>
-            <div>
-                {{bracket[1]}}
-            </div>
-        </div>
-        {% endif %}
-        {% if tournamentSize == 4 %}
-        <div>
-            <h4> Semi-Finals </h4>
-            <div>
-            {{bracket[0][0][0][0]}}
-            {{bracket[0][0][1][0]}}
-            </div>
-
-            <div>
-            {{bracket[0][1][0][0]}}
-            {{bracket[0][1][1][0]}}
-            </div>
-        </div>
-
-        <div>
-            <h4> Final </h4>
-            <div>
-            {{bracket[1][0][0][0]}}
-            {{bracket[1][0][1][0]}}
-            </div>
-        </div>
-
-        <div>
-            <h5> Winner </h5>
-            <div>
-                {{bracket[2]}}
-            </div>
-        </div>
-        {% endif %}
-        {% if tournamentSize == 8 %}
-        <div>
-            <div>
-            <h4> Quarter-Finals </h4>
-            <div>
-            {{bracket[0][0][0][0]}}
-            {{bracket[0][0][1][0]}}
-            </div>
-
-            <div>
-            {{bracket[0][1][0][0]}}
-            {{bracket[0][1][1][0]}}
-            </div>
-
-            <div>
-            {{bracket[0][2][0][0]}}
-            {{bracket[0][2][1][0]}}
-            </div>
-
-            <div>
-            {{bracket[0][3][0][0]}}
-            {{bracket[0][3][1][0]}}
-            </div>
-        </div>
-
-        <div>
-            <h4> Semi-Finals </h4>
-            <div>
-            {{bracket[1][0][0][0]}}
-            {{bracket[1][0][1][0]}}
-            </div>
-
-            <div>
-            {{bracket[1][1][0][0]}}
-            {{bracket[1][1][1][0]}}
-            </div>
-        </div>
-
-        <div>
-            <h4> Final </h4>
-            <div>
-            {{bracket[2][0][0][0]}}
-            {{bracket[2][0][1][0]}}
-            </div>
-        </div>
-
-        <div>
-            <h5> Winner </h5>
-            <div>
-                {{bracket[3]}}
-            </div>
-        </div>
-        {% endif %}
-        {% if tournamentSize == 16 %}
-        <div>
-            <h4> Round of 16 </h4>
-            <div>
-            {{bracket[0][0][0][0]}}
-            {{bracket[0][0][1][0]}}
-            </div>
-
-            <div>
-            {{bracket[0][1][0][0]}}
-            {{bracket[0][1][1][0]}}
-            </div>
-
-            <div>
-            {{bracket[0][2][0][0]}}
-            {{bracket[0][2][1][0]}}
-            </div>
-
-            <div>
-            {{bracket[0][3][0][0]}}
-            {{bracket[0][3][1][0]}}
-            </div>
-
-            <div>
-            {{bracket[0][4][0][0]}}
-            {{bracket[0][4][1][0]}}
-            </div>
-
-            <div>
-            {{bracket[0][5][0][0]}}
-            {{bracket[0][5][1][0]}}
-            </div>
-
-            <div>
-            {{bracket[0][6][0][0]}}
-            {{bracket[0][6][1][0]}}
-            </div>
-
-            <div>
-            {{bracket[0][7][0][0]}}
-            {{bracket[0][7][1][0]}}
-            </div>
-        </div>
-
-        <div>
-            <h4> Quarter-Finals </h4>
-            <div>
-            {{bracket[1][0][0][0]}}
-            {{bracket[1][0][1][0]}}
-            </div>
-
-            <div>
-            {{bracket[1][1][0][0]}}
-            {{bracket[1][1][1][0]}}
-            </div>
-
-            <div>
-            {{bracket[1][2][0][0]}}
-            {{bracket[1][2][1][0]}}
-            </div>
-
-            <div>
-            {{bracket[1][3][0][0]}}
-            {{bracket[1][3][1][0]}}
-            </div>
-        </div>
-
-        <div>
-            <h4> Semi-Finals </h4>
-            <div>
-            {{bracket[2][0][0][0]}}
-            {{bracket[2][0][1][0]}}
-            </div>
-
-            <div>
-            {{bracket[2][1][0][0]}}
-            {{bracket[2][1][1][0]}}
-            </div>
-        </div>
-
-        <div>
-            <h4> Final </h4>
-            <div>
-            {{bracket[3][0][0][0]}}
-            {{bracket[3][0][1][0]}}
-            </div>
-        </div>
-
-        <div>
-            <h5> Winner </h5>
-            <div>
-                {{bracket[4]}}
-            </div>
-        </div>
-        {% endif %}
    
         <a href="/">Go home!</a>
     {% endblock %}

@@ -1,4 +1,4 @@
-from flask import Blueprint, app, get_flashed_messages, redirect, render_template, session, url_for
+from flask import Blueprint, app, flash, get_flashed_messages, redirect, render_template, session, url_for
 from database import DataBaseHandler
 from Scripts.isAuthorised import isAuthorised
 import math
@@ -62,30 +62,28 @@ def createPlayers():
         return redirect(url_for("pages.login"))
     db = DataBaseHandler()
     tournamentID = session["currentTournament"]
-    tournamentID = int(tournamentID[0])
     tournamentDetails = db.fetchTournament(tournamentID)
-    tournamentSize = tournamentDetails[0][3]
+    tournamentSize = tournamentDetails[0][2]
     return render_template("tournamentplayerselection.html", db = db, tournamentSize = tournamentSize, tournamentID = tournamentID)
 
 @pages.route("/tournaments/<tournamentID>")
 def onView(tournamentID):
     #fetching data info + ensuring it is correct no matter where you view from
     tournamentID = int(tournamentID)
-
-
     currentTournament = tournamentID
     session["currentTournament"] = currentTournament
     db = DataBaseHandler()
-    matchDetails =db.fetchMatchDetails(tournamentID)
-    print("match details" , matchDetails)
+    #matchDetails = db.fetchMatchDetails(tournamentID)
+    #print("match details" , matchDetails)
 
     #fetching the rest of details for this tournament
-    tournamentDetails = db.fetchTournament(tournamentID)
+    tournamentDetails = db.fetchTournament(currentTournament)
+    print(currentTournament)
     print(tournamentDetails)
-    tournamentSize = tournamentDetails[0][3]
+    tournamentSize = tournamentDetails[0][2]
     #fetching matchIDs
-    matchIDs = db.fetchAllMatchIDs(tournamentID)
-    print("match" , matchIDs)
+    matchIDs = db.fetchAllMatchIDs(currentTournament)
+    print("matches" , matchIDs)
     #creating bracket
     bracket = []
     numberOfRounds = int(math.log2(tournamentSize))
@@ -108,11 +106,19 @@ def onView(tournamentID):
             bracket.append(roundOf16)
         n = n - 1
     #placing all the matches for each round by fetching playernames and putting them in bracket
-    for i in range(0, (int(tournamentSize) - 1)):
-        topAndBotIDs = db.fetchTopandBotIDs(matchIDs[i][0])
+    #putting them in a new list to avoid dealing with tuples
+    IDsOfMatches = []
+    for i in range(0,(int(tournamentSize - 1))):
+        print(i, "i value")
+        print(matchIDs[i], "id @ i think")
+        n = int(matchIDs[i][0])
+        print(n, "matchid as a thing")
+        IDsOfMatches.append(n)
+    for i in range(0,(int(tournamentSize) - 1)):
+        topAndBotIDs = db.fetchMatchEntries(IDsOfMatches[i])
         playerNames = [] 
         playerNames.append(db.fetchPlayerName(topAndBotIDs[0][0]))
-        playerNames.append(db.fetchPlayerName(topAndBotIDs[0][1]))
+        playerNames.append(db.fetchPlayerName(topAndBotIDs[1][0]))
         if i == 0:
             final.append(playerNames)
         elif i < 3:
@@ -123,25 +129,24 @@ def onView(tournamentID):
             roundOf16.append(playerNames)
     session["bracket"] = bracket
     session["currentTournamentsMatchIDs"] = matchIDs
-    print(bracket)
-    print(session["currentTournamentsMatchIDs"])
 
-    return render_template("tournamentbracketview.html", bracket = bracket, tournamentID = tournamentID, tournamentSize = tournamentSize, matchIDs = matchIDs)
+    return render_template("tournamentbracketview.html", bracket = bracket, tournamentID = tournamentID, tournamentSize = tournamentSize, matchIDs = IDsOfMatches, numberOfRounds = numberOfRounds, )
 
 @pages.route("/tournaments/<tournamentID>/<matchID>")
 def onUpdate(tournamentID, matchID):
     #fetching bracket as well as extra info:
     bracket = session["bracket"]
-    currentUser = session["currentUser"]
+    userID = session["userID"]
     session["currentMatch"] = matchID
     #ensuring all data from database is collected in the correct format
     currentUser = str(currentUser)
     db = DataBaseHandler()
     matchIDs = db.fetchAllMatchIDs(tournamentID)
     tournamentDetails = db.fetchTournament(tournamentID)
-    tournamentOwner = tournamentDetails[0][1]
+    tournamentOwner = tournamentDetails[0][4]
     tournamentOwner = str(tournamentOwner)
     #validation to prevent users who are not the owner from being able to update tournament
-    if currentUser != tournamentOwner:
+    if userID != tournamentOwner:
+        flash("Only tournament owner can update the tournament.")
         return redirect(url_for("pages.onView", tournamentID = tournamentID))
     return render_template("tournamentupdating.html", bracket = bracket, tournamentID = tournamentID)
