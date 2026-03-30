@@ -73,68 +73,11 @@ def createPlayers():
     #for loop that makes the matchentries for round 1
     for i in range(0,len(playerIDs), 2):
         #make a match for each pairing - and return back the ID
-        matchID = db.createMatches(tournamentID)
+        matchID = db.createMatches(tournamentID, 1)
         #then make a matchEntry for each player that will also incude the match ID and tournamentID
         db.createMatchEntry(matchID, playerIDs[i])
         db.createMatchEntry(matchID, playerIDs[i+1])
-    n = int(0)
-    #addition of extra matches fro all tournaments that have a size larger than 2
-    for i in range(0, numberOfrounds):
-        n = n + 2**i
-    print(n)
-    extraMatches = int(n)
-    n == 0
-    while n != extraMatches + 1:
-        matchID = db.createMatches(tournamentID)
-        n = n + 1
-    # #bit that makes the matches
-    # while n != int(tournamentSize):
-    #     db.createMatches(tournamentID)
-    #     n = n + 1
-    # #fetch all required match and player IDs to create first round of matches
-    # matchIDs = db.fetchAllMatchIDs(tournamentID)
-    # playerIDs = db.fetchAllPlayerIDs(tournamentID)
-    # #find out how many rounds there will be
-    # numberOfrounds = math.log2(tournamentSize)    
-    # n = numberOfrounds
-    # #determining where each user will start based on their ID and ammount of rounds 
-    # if n == 1:
-    #     db.createMatchEntry(matchIDs[0][0], playerIDs[0][0])
-    #     db.createMatchEntry(matchIDs[0][0], playerIDs[1][0])
-    # if n == 2:
-    #     db.createMatchEntry(matchIDs[1][0], playerIDs[0][0])
-    #     db.createMatchEntry(matchIDs[1][0], playerIDs[1][0])
-    #     db.createMatchEntry(matchIDs[2][0], playerIDs[2][0])
-    #     db.createMatchEntry(matchIDs[2][0], playerIDs[3][0])
-
-    # if n == 3:
-    #     db.createMatchEntry(matchIDs[3][0], playerIDs[0][0])
-    #     db.createMatchEntry(matchIDs[3][0], playerIDs[1][0])
-    #     db.createMatchEntry(matchIDs[4][0], playerIDs[2][0])
-    #     db.createMatchEntry(matchIDs[4][0], playerIDs[3][0])
-    #     db.createMatchEntry(matchIDs[5][0], playerIDs[4][0])
-    #     db.createMatchEntry(matchIDs[5][0], playerIDs[5][0])
-    #     db.createMatchEntry(matchIDs[6][0], playerIDs[6][0])
-    #     db.createMatchEntry(matchIDs[6][0], playerIDs[7][0])
-    # if n == 4:
-    #     db.createMatchEntry(matchIDs[7][0], playerIDs[0][0])
-    #     db.createMatchEntry(matchIDs[7][0], playerIDs[1][0])
-    #     db.createMatchEntry(matchIDs[8][0], playerIDs[2][0])
-    #     db.createMatchEntry(matchIDs[8][0], playerIDs[3][0])
-    #     db.createMatchEntry(matchIDs[9][0], playerIDs[4][0])
-    #     db.createMatchEntry(matchIDs[9][0], playerIDs[5][0])
-    #     db.createMatchEntry(matchIDs[10][0], playerIDs[6][0])
-    #     db.createMatchEntry(matchIDs[10][0], playerIDs[7][0])
-    #     db.createMatchEntry(matchIDs[11][0], playerIDs[8][0])
-    #     db.createMatchEntry(matchIDs[11][0], playerIDs[9][0])
-    #     db.createMatchEntry(matchIDs[12][0], playerIDs[10][0])
-    #     db.createMatchEntry(matchIDs[12][0], playerIDs[11][0])
-    #     db.createMatchEntry(matchIDs[13][0], playerIDs[12][0])
-    #     db.createMatchEntry(matchIDs[13][0], playerIDs[13][0])
-    #     db.createMatchEntry(matchIDs[14][0], playerIDs[14][0])
-    #     db.createMatchEntry(matchIDs[14][0], playerIDs[15][0])
-    
-        
+    n = int(0)  
     return redirect(url_for("pages.onView", tournamentID = tournamentID, tournamentSize = tournamentSize, tournamentName = tournamentName))
     return "done!"
 

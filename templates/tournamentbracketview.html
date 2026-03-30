@@ -6,27 +6,29 @@
 
     {% block content %}
         <div>
-            <h4> Final </h4>
             <div>
 
-                {% for round in bracket %}
-                    {% for match in round %}
+                {% for roundNumber, round in matches.items() %}
+                <h2>Round {{ roundNumber }}</h2>
+                    {% for matchNumber, match in round.items() %}
+                        <h3>Match {{ matchNumber }}</h3>
                         {% for player in match %}
+                            {% if player["matchPlayed"] %}
+                            <p class = {% if player["isWinner"] %} "winner" {% else %} "loser" {% endif %}> {{ player["playerName"] }}</p>
                             <form method = "post" action = "/tournaments/updatematch">
-                                <input type = "hidden" value = {{ matchID}} name = "matchID">
-                                <input type = "hidden" value = {{ tournamentID }} name = "tournamentID">
-                                <input type = "hidden" value = {{player[0]}}  name = "winner">            
-                                <input type = "submit" value = {{player[0]}}>
+                                <input type = "hidden" value = {{player["matchID"]}} name = "matchID">
+                                <input type = "hidden" value = {{tournamentID}} name = "tournamentID">
+                                <input type = "hidden" value = {{player["playerID"]}}  name = "winner">            
+                                <input type = "submit" value = {{player["playerName"]}}>
                             </form>
-                         {% endfor %}
-                    {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %} 
                 {% endfor %}
 
             <h5> Tournament Winner </h5>            
-            <div>                
-                {{bracket[numberOfRounds + 1]}}            
-            </div>
-            <!-- <a href={{"/tournaments/" + tournamentID|string + "/" + matchIDs[0][0]|string }} > -->
+
+           
    
         <a href="/">Go home!</a>
     {% endblock %}

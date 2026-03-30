@@ -145,6 +145,25 @@ class DataBaseHandler:
                          )""")
             conn.commit()
 
+    def getAllTournamentMatches(self, tournamentID):
+        matchDetails = []
+        with self.connect() as conn:
+            matches = conn.execute("""
+            SELECT matchID FROM matches WHERE tournamentID = ?;
+            """, (tournamentID, )).fetchall()
+            
+            for match in matches:
+                matchDetails.append(conn.execute("""
+                    SELECT players.playerName, players.playerID, matchEntry.matchID
+                    FROM players 
+                    JOIN matchEntry
+                    ON matchEntry.playerID = players.playerID 
+                    WHERE matchEntry.matchID = ?""", match).fetchall())
+
+        return matchDetails
+        
+            
+
     def addPlayer(self, playerName, tournamentID):
             with self.connect() as conn:
                 conn.execute("INSERT INTO players (playerName, tournamentID) VALUES (?, ?)",(playerName, tournamentID))
@@ -168,14 +187,15 @@ class DataBaseHandler:
             conn.execute("""CREATE TABLE IF NOT EXISTS matches (
                          matchID INTEGER PRIMARY KEY AUTOINCREMENT,
                          tournamentID INTEGER NOT NULL,
+                         round INTERGER,
                          winnerID INTEGER DEFAULT NULL,
                          FOREIGN KEY (tournamentID) REFERENCES tournaments(tournamentID) ON DELETE CASCADE)""")
             conn.commit()
 
-    def createMatches(self, tournamentID):
+    def createMatches(self, tournamentID, round):
         with self.connect() as conn:
             conn.cursor()
-            conn.execute("INSERT INTO matches (tournamentID) VALUES (?)",(tournamentID,))
+            conn.execute("INSERT INTO matches (tournamentID, round) VALUES (?, ?)",(tournamentID,round,))
             results = conn.execute("SELECT last_insert_rowid();")
             matchID = results.fetchone() 
             conn.commit()
@@ -194,6 +214,16 @@ class DataBaseHandler:
             conn.commit()
             return newWinner
 
+    def getAllMatchDetails(self, tournamentID):
+        sqlToRun = """SELECT players.playerName, players.playerID, matches.matchID, matches.winnerID, matches.round
+                      FROM players
+                      JOIN matchEntry ON players.playerID = matchEntry.playerID
+                      JOIN matches ON matchEntry.matchID = matches.matchID
+                      WHERE matches.tournamentID = ?"""
+        with self.connect() as conn:
+            results = conn.execute(sqlToRun, (tournamentID,)).fetchall()
+            return results
+        
     def fetchTournamentID(self, tournamentName):
         with self.connect() as conn:
             conn.cursor()
