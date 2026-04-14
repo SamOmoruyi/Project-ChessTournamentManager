@@ -85,7 +85,7 @@ def groupMatches(matchData):
         matchNumber = match[2]
         playerName = match[0]
         playerID = match[1]
-        isWinner = playerID ==[match[3]] #gives true of false based on if playerID matches winnerID
+        isWinner = playerID == [match[3]] #gives true of false based on if playerID matches winnerID
         matchPlayed = match[3] != None
         groupedMatches[roundNumber][matchNumber].append(
                 {
@@ -96,6 +96,7 @@ def groupMatches(matchData):
                 "matchPlayed" : matchPlayed
                 }
             )
+        return groupedMatches
 
 @pages.route("/tournaments/<tournamentID>")
 def onView(tournamentID):
@@ -104,11 +105,10 @@ def onView(tournamentID):
     currentTournament = tournamentID
     session["currentTournament"] = currentTournament
     db = DataBaseHandler()
-    #matchDetails = db.fetchMatchDetails(tournamentID)
-    #print("match details" , matchDetails)
     matchDetails = db.getAllMatchDetails(tournamentID)
+    print("matchdetails", matchDetails)
     groupedMatches = groupMatches(matchDetails)
-
+    print(groupedMatches)
     return render_template("tournamentbracketview.html", matchDetails = matchDetails, tournamentID = currentTournament, matches = groupedMatches )
 
     # #fetching the rest of details for this tournament

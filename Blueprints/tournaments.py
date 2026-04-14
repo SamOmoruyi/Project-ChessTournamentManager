@@ -90,10 +90,20 @@ def updateMatch():
     formDetails = request.form
     tournamentID = formDetails.get("tournamentID")
     winner = formDetails.get("winner")
+    matchID = formDetails.get("matchID")
+    roundNumber = formDetails.get("roundNumber")
     print(formDetails)
-    
     return formDetails
-
+    #updating winner on the database
+    db.updateWinner(tournamentID, winner, matchID)
+    #check if all games with roundnumber winner is from have been played
+        #if no do nothing else and return to bracketview
+        #if yes checks if this is not the final round of the tournament
+            #if no declare winner and return player to bracketview
+            #if yes create all next round matches by fetching all winners from round
+                #do this by pairing winners based on playerID where 2 smallest values pair up then the next and so on
+                #then create match entries for each player based on these pairings
+                #create a match after each entry is added 
 @tournaments.route("/updatetournament", methods = ["POST"])
 def updateTournament():
     #fetch details

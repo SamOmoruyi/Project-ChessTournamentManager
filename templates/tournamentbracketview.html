@@ -7,7 +7,6 @@
     {% block content %}
         <div>
             <div>
-
                 {% for roundNumber, round in matches.items() %}
                 <h2>Round {{ roundNumber }}</h2>
                     {% for matchNumber, match in round.items() %}
@@ -15,20 +14,19 @@
                         {% for player in match %}
                             {% if player["matchPlayed"] %}
                             <p class = {% if player["isWinner"] %} "winner" {% else %} "loser" {% endif %}> {{ player["playerName"] }}</p>
+                            {% else %}
                             <form method = "post" action = "/tournaments/updatematch">
                                 <input type = "hidden" value = {{player["matchID"]}} name = "matchID">
                                 <input type = "hidden" value = {{tournamentID}} name = "tournamentID">
-                                <input type = "hidden" value = {{player["playerID"]}}  name = "winner">            
+                                <input type = "hidden" value = {{player["playerID"]}}  name = "winner">    
+                                <input type = "hidden" value = {{roundNumber}} name = "roundNumber">        
                                 <input type = "submit" value = {{player["playerName"]}}>
                             </form>
                             {% endif %}
                         {% endfor %}
                     {% endfor %} 
-                {% endfor %}
+                {% endfor %}       
 
-            <h5> Tournament Winner </h5>            
-
-           
-   
         <a href="/">Go home!</a>
+
     {% endblock %}
