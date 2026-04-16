@@ -96,7 +96,7 @@ def groupMatches(matchData):
                 "matchPlayed" : matchPlayed
                 }
             )
-        return groupedMatches
+    return groupedMatches
 
 @pages.route("/tournaments/<tournamentID>")
 def onView(tournamentID):
@@ -106,66 +106,8 @@ def onView(tournamentID):
     session["currentTournament"] = currentTournament
     db = DataBaseHandler()
     matchDetails = db.getAllMatchDetails(tournamentID)
-    print("matchdetails", matchDetails)
     groupedMatches = groupMatches(matchDetails)
-    print(groupedMatches)
     return render_template("tournamentbracketview.html", matchDetails = matchDetails, tournamentID = currentTournament, matches = groupedMatches )
-
-    # #fetching the rest of details for this tournament
-    # tournamentDetails = db.fetchTournament(currentTournament)
-    # print(currentTournament)
-    # print(tournamentDetails)
-    # tournamentSize = tournamentDetails[0][2]
-    # #fetching matchIDs
-    # matchIDs = db.fetchAllMatchIDs(currentTournament)
-    # print("matches" , matchIDs)
-    # #creating bracket
-    # bracket = []
-    # numberOfRounds = int(math.log2(tournamentSize))
-    # n = numberOfRounds
-    # # logic for how many rounds are made
-    # while n != 0:
-    #     if n == 1:
-    #         final = []
-    #         bracket.append(final)
-    #         tournamentWinner = []
-    #         bracket.append(tournamentWinner)
-    #     if n == 2:
-    #         semiFinal = []
-    #         bracket.append(semiFinal)
-    #     if n == 3:
-    #         quarterFinal = []
-    #         bracket.append(quarterFinal)
-    #     if n == 4:
-    #         roundOf16 = []
-    #         bracket.append(roundOf16)
-    #     n = n - 1
-    # #placing all the matches for each round by fetching playernames and putting them in bracket
-    # #putting them in a new list to avoid dealing with tuples
-    # IDsOfMatches = []
-    # for i in range(0,(int(tournamentSize - 1))):
-    #     print(i, "i value")
-    #     print(matchIDs[i], "id @ i think")
-    #     n = int(matchIDs[i][0])
-    #     print(n, "matchid as a thing")
-    #     IDsOfMatches.append(n)
-    # for i in range(0,(int(tournamentSize) - 1)):
-    #     topAndBotIDs = db.fetchMatchEntries(IDsOfMatches[i])
-    #     playerNames = [] 
-    #     playerNames.append(db.fetchPlayerName(topAndBotIDs[0][0]))
-    #     playerNames.append(db.fetchPlayerName(topAndBotIDs[1][0]))
-    #     if i == 0:
-    #         final.append(playerNames)
-    #     elif i < 3:
-    #         semiFinal.append(playerNames)
-    #     elif i < 7:
-    #         quarterFinal.append(playerNames)
-    #     else:
-    #         roundOf16.append(playerNames)
-    # session["bracket"] = bracket
-    # session["currentTournamentsMatchIDs"] = matchIDs
-
-    # return render_template("tournamentbracketview.html", bracket = bracket, tournamentID = tournamentID, tournamentSize = tournamentSize, matchIDs = IDsOfMatches, numberOfRounds = numberOfRounds, )
 
 @pages.route("/tournaments/<tournamentID>/<matchID>")
 def onUpdate(tournamentID, matchID):

@@ -11,10 +11,10 @@ class DataBaseHandler:
         #shortening sql.connect so it can be easier to type (not important now but needs to stay consistent for later)
         with self.connect() as conn:  
             conn.cursor()
-            #conn.execute("drop table players;")
-            #conn.execute("drop table tournaments;")
-            #conn.execute("drop table matches;")        
-            #conn.execute("drop table matchEntry;")
+            conn.execute("drop table players;")
+            conn.execute("drop table tournaments;")
+            conn.execute("drop table matches;")        
+            conn.execute("drop table matchEntry;")
             self.createUsersTable()
             self.createTournamentsTable()
             self.createPlayersTable()
@@ -212,7 +212,7 @@ class DataBaseHandler:
     def updateWinner(self, tournamentID, newWinner, matchID):
         with self.connect() as conn:
             conn.cursor()
-            conn.execute("UPDATE matches SET winner = ? WHERE tournamentID = ?", (newWinner, tournamentID, matchID))
+            conn.execute("UPDATE matches SET winnerID = ? WHERE tournamentID= ? AND matchID  = ?", (newWinner, tournamentID, matchID))
             conn.commit()
             return newWinner
 
@@ -281,6 +281,20 @@ class DataBaseHandler:
             results = conn.execute("SELECT playerName from players WHERE playerID = ?",(playerID,))
             playerNames = results.fetchone()
             return playerNames
+        
+    def fetchMatches(self, tournamentID, round):
+        with self.connect() as conn:
+            conn.cursor()
+            results = conn.execute("SELECT matchID FROM matches WHERE tournamentID = ? AND round = ?", (tournamentID, round, ))
+            matchIDs = results.fetchall()
+            return matchIDs
+
+    def fetchWinner(self, matchID):
+        with self.connect() as conn:
+            conn.cursor()
+            results = conn.execute("SELECT winnerID FROM matches WHERE matchID = ?", (matchID, ))
+            winner = results.fetchone()
+            return winner[0]
 
 db = DataBaseHandler()
 db.createTable()
