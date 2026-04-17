@@ -75,9 +75,7 @@ def createPlayers():
         #then make a matchEntry for each player that will also incude the match ID and tournamentID
         db.createMatchEntry(matchID, playerIDs[i])
         db.createMatchEntry(matchID, playerIDs[i+1])
-    n = int(0)  
     return redirect(url_for("pages.onView", tournamentID = tournamentID, tournamentSize = tournamentSize, tournamentName = tournamentName))
-    return "done!"
 
 
 @tournaments.route("/updatematch", methods = ["POST"])
@@ -100,19 +98,17 @@ def updateMatch():
     isError = False
     for match in matchIDs:
         if db.fetchWinner(match[0]) == None:
-            isError == True
+            isError = True
+            print(str(isError))
         if isError == True:
         #if one id is none do nothing else and return to bracketview
-            print("someone has yet to win")
             return redirect(url_for("pages.onView", tournamentID = tournamentID))
-        #if yes checks if this is not the final round of the tournament
+        #check if this is not the final round of the tournament
         #do this by fetching size and checking if round number is equal to log2size
         tournamentSize = db.fetchTournamentSize(tournamentID)
-        print(int(math.log2(tournamentSize)))
-        #if no declare winner and return player to bracketview
-    if int(math.log2(tournamentSize)) == roundNumber:
-        flash(str(playerName) + "has won the tournament!")
-        return redirect(url_for("pages.onView", tournamentID = tournamentID))
+        if int(math.log2(tournamentSize)) == roundNumber:
+            flash(str(playerName) +" has won the tournament!")
+            return redirect(url_for("pages.onView", tournamentID = tournamentID))        
     else:
         #if yes create all next round matches by fetching all winners from round
         winnersIDs = []
