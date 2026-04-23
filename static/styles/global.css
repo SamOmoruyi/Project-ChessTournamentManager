@@ -1,0 +1,14 @@
+body {
+    background-color: rgb(212, 239, 240);
+    font-family: 'Courier New', Courier, monospace;
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    justify-items: center;
+    align-items: center;
+}
+
+.app{
+    justify-items: center;
+    justify-content: center;
+}

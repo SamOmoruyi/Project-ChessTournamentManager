@@ -16,7 +16,8 @@ def dashboard():
     session["currentTournament"] = currentTournament
     session["currentTournamentsMatchIDs"] = currentTournamentsMatchIDs
     db = DataBaseHandler()
-    return render_template("dashboard.html", currentUser = currentUser, db = db, userID = userID)
+    tournaments = db.fetchTournamentsByUser(userID)
+    return render_template("dashboard.html", currentUser = currentUser, db = db, userID = userID, tournaments = tournaments)
 
 # These 3 pages have validation to prevent you from accessing them if you are logged in
 @pages.route("/")
@@ -85,7 +86,12 @@ def groupMatches(matchData):
         matchNumber = match[2]
         playerName = match[0]
         playerID = match[1]
-        isWinner = playerID == [match[3]] #gives true of false based on if playerID matches winnerID
+
+        if playerID == match[3]: #gives true of false based on if playerID matches winnerID
+            isWinner = True
+        else:
+            isWinner = False
+        
         matchPlayed = match[3] != None
         groupedMatches[roundNumber][matchNumber].append(
                 {
@@ -100,30 +106,16 @@ def groupMatches(matchData):
 
 @pages.route("/tournaments/<tournamentID>")
 def onView(tournamentID):
+    #blocking guests from entry
+    if not isAuthorised():
+        return redirect(url_for("pages.login"))
     #fetching data info + ensuring it is correct no matter where you view from
     tournamentID = int(tournamentID)
     currentTournament = tournamentID
     session["currentTournament"] = currentTournament
     db = DataBaseHandler()
+    tournament = db.fetchTournament(tournamentID)
+    tournamentName = tournament[0][1]
     matchDetails = db.getAllMatchDetails(tournamentID)
-    groupedMatches = groupMatches(matchDetails)
-    return render_template("tournamentbracketview.html", matchDetails = matchDetails, tournamentID = currentTournament, matches = groupedMatches )
-
-@pages.route("/tournaments/<tournamentID>/<matchID>")
-def onUpdate(tournamentID, matchID):
-    #fetching bracket as well as extra info:
-    bracket = session["bracket"]
-    userID = session["userID"]
-    session["currentMatch"] = matchID
-    #ensuring all data from database is collected in the correct format
-    currentUser = str(currentUser)
-    db = DataBaseHandler()
-    matchIDs = db.fetchAllMatchIDs(tournamentID)
-    tournamentDetails = db.fetchTournament(tournamentID)
-    tournamentOwner = tournamentDetails[0][4]
-    tournamentOwner = str(tournamentOwner)
-    #validation to prevent users who are not the owner from being able to update tournament
-    if userID != tournamentOwner:
-        flash("Only tournament owner can update the tournament.")
-        return redirect(url_for("pages.onView", tournamentID = tournamentID))
-    return render_template("tournamentupdating.html", bracket = bracket, tournamentID = tournamentID)
+    groupedMatches = groupMatches(matchDetails) #from helper function
+    return render_template("tournamentbracketview.html", matchDetails = matchDetails, tournamentID = currentTournament, matches = groupedMatches, tournamentName = tournamentName )

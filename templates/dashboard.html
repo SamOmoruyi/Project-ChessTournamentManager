@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-
+<div class = "webpage">
     <h1>Hello {{currentUser}}</h1>
 
     <h2>dashboard</h2>
@@ -13,6 +13,36 @@
     <a href = auth/signout>Sign Out</a>
 
     <a href = /tournaments>Tournaments</a>
+
+    <div class="table">
+    <h3>Tournaments made by {{currentUser}}</h3>
+    {% if not tournaments %}
+        <p>No tournaments at the moment</p>
+    {% else %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Tournament Name</th>
+                    <th>Description</th>
+                    <th>Size</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tournament in tournaments %}
+                    <tr>
+                        <td>
+                            <a href = {{ "/tournaments/" + tournament[0]|string }}> {{tournament[1]}} </a>
+                        </td>
+                        <td>{{tournament[2]}}</td>
+                        <td>{{tournament[3]}}</td>
+                        <td>{{tournament[4]}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+    </div>
 
     {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -23,5 +53,5 @@
             </ul>
         {% endif %}
     {% endwith %}
-
+</div>
 {% endblock %}

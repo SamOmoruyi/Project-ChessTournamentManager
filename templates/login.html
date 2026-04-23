@@ -4,20 +4,24 @@
     TempTitle : Login
 {% endblock %}
 
+{% block head %}
+<link rel="stylesheet" href={{ url_for('static', filename='styles/login.css' ) }}>
+{% endblock %}
+
 {% block content %}
-    <div>
+    <div class = loginForm>
         <h1>TempTitle </h1>
 
         <h2> Please input your details to login</h2>
 
         <form action = "/auth/authoriseuser" method = "post">
             
-            <div>
+            <div class="formInput">
                 <label for = "username">Username:</label>
                 <input name = "username" id = "username" type = "text" required /> 
             </div>
 
-            <div>
+            <div class="formInput">
                 <label for = "password">Password:</label>
                 <input name = "password" id = "password" type = "password" required /> 
             </div>

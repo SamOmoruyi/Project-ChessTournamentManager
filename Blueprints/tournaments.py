@@ -99,7 +99,6 @@ def updateMatch():
     for match in matchIDs:
         if db.fetchWinner(match[0]) == None:
             isError = True
-            print(str(isError))
         if isError == True:
         #if one id is none do nothing else and return to bracketview
             return redirect(url_for("pages.onView", tournamentID = tournamentID))

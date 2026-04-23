@@ -5,9 +5,11 @@
 {% endblock %}
 
 {% block content %}
+<h1>Tournament Home</h1>
     <div>
         <a href= "createtournament">Create!</a>
     </div>
+    <div class="table">
     {% if not tournaments %}
         <p>No tournaments at the moment</p>
     {% else %}
@@ -34,6 +36,7 @@
             </tbody>
         </table>
     {% endif %}
+    </div>
 
     {% for message in messages %}
         <p> {{ message }} </p>

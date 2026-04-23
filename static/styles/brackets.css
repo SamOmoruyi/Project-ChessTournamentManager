@@ -1,0 +1,45 @@
+.winner {
+    color: black;
+    background-color: green;
+    justify-items: center;
+    align-items: center;
+}
+
+.loser {
+    color: black;
+    background-color: red;
+    justify-items: center;
+    align-items: center;
+}
+
+.round {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.tournament {
+    display: flex;
+    flex-direction: row;
+    gap: 100px;
+    height: 100%;
+    width: fit-content;
+}
+
+.app {
+    width: 100vw;
+    height: 100vh;
+}
+
+.player{
+    margin: auto;
+    background-color: aliceblue;
+    padding: 10px;
+    border-radius: 25px;
+    border: 1px solid black;
+}
+
+.roundText{
+    display: flex;
+    align-items: center;
+}

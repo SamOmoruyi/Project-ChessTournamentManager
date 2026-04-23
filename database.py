@@ -11,10 +11,6 @@ class DataBaseHandler:
         #shortening sql.connect so it can be easier to type (not important now but needs to stay consistent for later)
         with self.connect() as conn:  
             conn.cursor()
-            conn.execute("drop table players;")
-            conn.execute("drop table tournaments;")
-            conn.execute("drop table matches;")        
-            conn.execute("drop table matchEntry;")
             self.createUsersTable()
             self.createTournamentsTable()
             self.createPlayersTable()
@@ -110,6 +106,14 @@ class DataBaseHandler:
             conn.commit()
             tournament = results.fetchall()
             return tournament
+        
+    def fetchTournamentsByUser(self, userID):
+        with self.connect() as conn:
+            conn.cursor()
+            results = conn.execute("SELECT tournamentID, tournamentName, tournamentDescription, tournamentSize, tournamentDate FROM tournaments WHERE userID = ?", (userID,))
+            conn.commit()
+            tournaments = results.fetchall()
+            return tournaments
 
     def addTournament(self, userID, tournamentName, tournamentDate, tournamentDescription, tournamentSize):
         try:

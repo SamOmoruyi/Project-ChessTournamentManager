@@ -4,31 +4,45 @@
     TempTitle : Bracket View
 {% endblock %}
 
+{% block head %}
+<link rel="stylesheet" href={{ url_for('static', filename='styles/brackets.css' ) }}>
+{% endblock %}
+
     {% block content %}
-        <div>
-            <div>
+        <div class = "app">
+            <h1> {{ tournamentName }}</h1>
+            <div class = "tournament">
                 {% for roundNumber, round in matches.items() %}
-                <h2>Round {{ roundNumber }}</h2>
-                    {% for matchNumber, match in round.items() %}
+                <div class = "round">
+                <h2 class="roundText">Round {{ roundNumber }}</h2>
+                {% for matchNumber, match in round.items() %}
+                        <div class = "match">
                         <h3>Match {{ matchNumber }}</h3>
                         {% for player in match %}
+                            <div class = "player">
                             {% if player["matchPlayed"] %}
-                            <p class = {% if player["isWinner"] %} "winner" {% else %} "loser" {% endif %}> {{ player["playerName"] }}</p>
-                            {% else %}
-                            <form method = "post" action = "/tournaments/updatematch">
-                                <input type = "hidden" value = {{player["matchID"]}} name = "matchID">
-                                <input type = "hidden" value = {{tournamentID}} name = "tournamentID">
-                                <input type = "hidden" value = {{player["playerID"]}}  name = "winner">    
-                                <input type = "hidden" value = {{roundNumber}} name = "roundNumber">        
-                                <input type = "submit" value = {{player["playerName"]}} name = "playerName">
-                            </form>
+                                <p class = {% if player["isWinner"] %} "winner" {% else %} "loser" {% endif %}> {{ player["playerName"] }}</p>
+                                {% else %}
+                                <form method = "post" action = "/tournaments/updatematch">
+                                    <input type = "hidden" value = {{player["matchID"]}} name = "matchID">
+                                    <input type = "hidden" value = {{tournamentID}} name = "tournamentID">
+                                    <input type = "hidden" value = {{player["playerID"]}}  name = "winner">    
+                                    <input type = "hidden" value = {{roundNumber}} name = "roundNumber">        
+                                    <input type = "submit" value = {{player["playerName"]}} name = "playerName">
+                                    </form>
                             {% endif %}
+                            </div>
                         {% endfor %}
-                    {% endfor %} 
+                        </div>
+                        {% endfor %} 
+                    </div>    
                 {% endfor %}       
-
-        <a href="/">Go home!</a>
-
+            </div>
+        </div>
+        <div>
+            <a href="/">Go home!</a>
+        </div>
+        <div>
         {% with messages = get_flashed_messages() %}
         {% if messages %}
             <ul class=flashes>
@@ -38,5 +52,5 @@
             </ul>
         {% endif %}
     {% endwith %}
-
+    </div>
     {% endblock %}
