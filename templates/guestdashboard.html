@@ -5,13 +5,14 @@
 {% endblock %}
 
 {% block content %}
+<div class = "webpage">
     <h1>Hello Guest!</h1>
 
-    <h2>dashboard</h2>
+    <h2>Dashboard</h2>
 
     <a href = /login>Login</a>
     <a href = /signup>Sign-Up</a>
-
+</div>
     {% with messages = get_flashed_messages() %}
         {% if messages %}
             <ul class=flashes>
@@ -21,5 +22,5 @@
             </ul>
         {% endif %}
     {% endwith %}
-    
+
 {% endblock %}

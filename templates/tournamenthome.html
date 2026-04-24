@@ -5,11 +5,12 @@
 {% endblock %}
 
 {% block content %}
-<h1>Tournament Home</h1>
+<h1>Chess Manager</h1>
+<h2>Tournament Home</h2>
     <div>
         <a href= "createtournament">Create!</a>
     </div>
-    <div class="table">
+    <div class="userTable">
     {% if not tournaments %}
         <p>No tournaments at the moment</p>
     {% else %}

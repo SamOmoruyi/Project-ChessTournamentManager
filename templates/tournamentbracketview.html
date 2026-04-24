@@ -10,6 +10,7 @@
 
     {% block content %}
         <div class = "app">
+            <h1>Chess Manager</h1>
             <h1> {{ tournamentName }}</h1>
             <div class = "tournament">
                 {% for roundNumber, round in matches.items() %}
@@ -19,7 +20,7 @@
                         <div class = "match">
                         <h3>Match {{ matchNumber }}</h3>
                         {% for player in match %}
-                            <div class = "player">
+                            <div class = {% if player["isWinner"] %} "winner" {% else %} "loser" {% endif %}>
                             {% if player["matchPlayed"] %}
                                 <p class = {% if player["isWinner"] %} "winner" {% else %} "loser" {% endif %}> {{ player["playerName"] }}</p>
                                 {% else %}
@@ -42,6 +43,7 @@
         <div>
             <a href="/">Go home!</a>
         </div>
+        
         <div>
         {% with messages = get_flashed_messages() %}
         {% if messages %}

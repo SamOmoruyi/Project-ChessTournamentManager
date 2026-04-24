@@ -1,15 +1,23 @@
 .winner {
     color: black;
-    background-color: green;
+    background-color: rgb(224, 255, 255);
     justify-items: center;
     align-items: center;
+    margin: auto;
+    padding: 10px;
+    border-radius: 25px;
+    border: 1px solid black;
 }
 
 .loser {
     color: black;
-    background-color: red;
+    background-color: rgb(168, 190, 190);
     justify-items: center;
     align-items: center;
+    margin: auto;
+    padding: 10px;
+    border-radius: 25px;
+    border: 1px solid black;
 }
 
 .round {

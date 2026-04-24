@@ -9,7 +9,7 @@ TempTitle : Player Selection
 <h1>TempTitle </h1>
 
 <h2> Please input details for tournament you would like to make</h2>
-
+<div class = "form">
 <form action="/tournaments/createplayers" method="post">
 
     {% for i in range(1,tournamentSize + 1) %}
@@ -24,6 +24,7 @@ TempTitle : Player Selection
     </div>
 
 </form>
+</div>
 {% for message in messages %}
 <p>{{ message }}</p>
 {% endfor %}
