@@ -4,6 +4,7 @@ body {
     height: 100vh;
     justify-items: center;
     align-items: center;
+    scale: 1.5;
 }
 
 input {

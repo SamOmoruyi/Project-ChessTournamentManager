@@ -1,5 +1,4 @@
 from flask import Flask
-from Scripts.isAuthorised import isAuthorised
 from database import DataBaseHandler
 from Blueprints.pages import pages
 from Blueprints.auth import auth

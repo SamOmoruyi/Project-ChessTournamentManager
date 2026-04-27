@@ -11,6 +11,11 @@ class DataBaseHandler:
         #shortening sql.connect so it can be easier to type (not important now but needs to stay consistent for later)
         with self.connect() as conn:  
             conn.cursor()
+            #conn.execute("DROP TABLE users")
+            #conn.execute("DROP TABLE tournaments")
+            #conn.execute("DROP TABLE players")
+            #conn.execute("DROP TABLE matches")
+            #conn.execute("DROP TABLE matchEntry")
             self.createUsersTable()
             self.createTournamentsTable()
             self.createPlayersTable()

@@ -1,15 +1,18 @@
 {%extends "base.html" %}
 
 {% block title %}
-TempTitle : Player Selection
+ChessManager : Player Selection
 {% endblock %}
 
 {% block content%}
 
+<link rel="stylesheet" href={{ url_for('static', filename='styles/login.css' ) }}>
+
+<div class = "form">
 <h1>TempTitle </h1>
 
 <h2> Please input details for tournament you would like to make</h2>
-<div class = "form">
+
 <form action="/tournaments/createplayers" method="post">
 
     {% for i in range(1,tournamentSize + 1) %}

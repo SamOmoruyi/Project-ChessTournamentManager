@@ -14,8 +14,14 @@ body {
     padding: 10px;
     border-radius: 25px;
     box-shadow: 5px 5px 20px black;
+    
 }
 
 table, th, td {
   border: 1px solid;
+}
+
+.flashes {
+    display: flex;
+    justify-content: center;
 }
